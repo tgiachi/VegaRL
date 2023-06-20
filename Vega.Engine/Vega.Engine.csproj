@@ -7,9 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="GoRogue" Version="3.0.0-beta06-debug" />
-      <PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
-      <PackageReference Include="SadConsole" Version="9.2.2" />
+      <ProjectReference Include="..\Vega.Api\Vega.Api.csproj" />
     </ItemGroup>
 
 </Project>
