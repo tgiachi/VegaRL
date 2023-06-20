@@ -5,10 +5,11 @@ using Humanizer;
 using Microsoft.Extensions.Logging;
 using Vega.Api.Attributes;
 using Vega.Api.Data.Directories;
+using Vega.Api.Data.Entities.Base;
 using Vega.Api.Utils;
 using Vega.Api.Utils.Json;
+using Vega.Engine.Events;
 using Vega.Engine.Interfaces;
-
 using Vega.Engine.Services.Base;
 
 namespace Vega.Engine.Services;
@@ -60,7 +61,6 @@ public class DataService : BaseVegaReloadableService<DataService>, IDataService
 
         Logger.LogInformation("File {File} loaded in {Elapsed}", file.Name, sw.Elapsed);
 
-
         return Task.CompletedTask;
     }
 
@@ -71,6 +71,7 @@ public class DataService : BaseVegaReloadableService<DataService>, IDataService
 
         Logger.LogInformation("Loading {Count} files", files.Length);
 
+        _messageBusService.Send(new LoadingDataEvent());
         foreach (var file in files)
         {
             try
@@ -84,6 +85,7 @@ public class DataService : BaseVegaReloadableService<DataService>, IDataService
         }
 
         Logger.LogInformation("Loaded {Count} files in {Elapsed}", files.Length, sw.Elapsed);
+        _messageBusService.Send(new DataLoadedEvent());
     }
 
     private void InsertRawData(Type type, List<string> data)
@@ -100,6 +102,15 @@ public class DataService : BaseVegaReloadableService<DataService>, IDataService
     {
         LoadJsonFiles();
         return Task.FromResult(true);
+    }
+
+    public List<TEntity> GetData<TEntity>() where TEntity : BaseEntity
+    {
+        var type = typeof(TEntity);
+
+        return !_rawData.ContainsKey(type)
+            ? new List<TEntity>()
+            : _rawData[type].Select(JsonSerializerInstance.Deserialize<TEntity>).ToList();
     }
 
     public override Task<bool> ReloadAsync()
