@@ -36,6 +36,7 @@ public class DirectoriesConfig
     public void Initialize(string rootDirectory)
     {
         Directory.CreateDirectory(rootDirectory);
+        Directories[DirectoryNameType.Root] = rootDirectory;
         foreach (var directory in Directories.Where(s => s.Key != DirectoryNameType.Root))
         {
             Directories[directory.Key] = Path.Combine(rootDirectory, directory.Value.ToUnderscoreCase());

@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using System.Text.Json.Nodes;
 
 
 namespace Vega.Api.Utils.Json;
@@ -7,36 +8,27 @@ public class JsonSerializerInstance
 {
     private const string _typePropertyName = "$type";
 
-    public TEntity Deserialize<TEntity>(string json) =>
+    public static TEntity Deserialize<TEntity>(string json) =>
         JsonSerializer.Deserialize<TEntity>(json, JsonSerializerUtility.DefaultOptions);
 
-    public Dictionary<Type, List<string>> ParseDataType(string json, Dictionary<string, Type> mappedTypes)
+    public static Dictionary<string, List<string>> ParseDataType(string json, Dictionary<string, Type> mappedTypes)
     {
-        var results = new Dictionary<Type, List<string>>();
-        var node = JsonSerializer.SerializeToNode(json, JsonSerializerUtility.DefaultOptions);
-        var jsonArray = node.AsArray();
-
-        if (json == null)
+        var results = new Dictionary<string, List<string>>();
+        var node = JsonSerializer.Deserialize<JsonNode>(json, JsonSerializerUtility.DefaultOptions);
+        foreach (var item in node.AsArray())
         {
-            throw new Exception("Json is not an array");
+            if (item != null)
+            {
+                var itemType = item[_typePropertyName].ToString();
+                if (!results.ContainsKey(itemType))
+                {
+                    results.Add(itemType, new List<string>());
+                }
+
+                results[itemType].Add(item.ToString());
+            }
         }
 
-        foreach (var item in jsonArray)
-        {
-            if (item[_typePropertyName] == null)
-            {
-                throw new Exception($"Json item does not contain {_typePropertyName} property");
-            }
-
-            var type = mappedTypes[item[_typePropertyName].ToJsonString()];
-
-            if (!results.ContainsKey(type))
-            {
-                results[type] = new List<string>();
-            }
-
-            results[type].Add(item.ToJsonString());
-        }
 
         return results;
     }

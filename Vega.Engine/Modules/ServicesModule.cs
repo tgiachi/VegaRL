@@ -9,14 +9,14 @@ namespace Vega.Engine.Modules;
 [DiModule]
 public class ServicesModule : IModule
 {
-    public ServiceCollection Load(ServiceCollection services)
+    public IServiceCollection Load(IServiceCollection services)
     {
         AssemblyUtils.GetAttribute<VegaServiceAttribute>()
             .ForEach(
                 s =>
                 {
                     var serviceInterf = AssemblyUtils.GetInterfacesOfType(s)
-                        .FirstOrDefault(s => s != typeof(IVegaService) || s != typeof(IVegaReloadableService));
+                        .FirstOrDefault(s => s != typeof(IVegaService) && s != typeof(IVegaReloadableService));
 
                     services.AddSingleton(serviceInterf, s);
                 }
