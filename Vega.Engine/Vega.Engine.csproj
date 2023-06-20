@@ -10,4 +10,8 @@
       <ProjectReference Include="..\Vega.Api\Vega.Api.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Serilog" Version="3.0.0" />
+    </ItemGroup>
+
 </Project>

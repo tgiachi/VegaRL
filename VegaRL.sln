@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vega.Api", "Vega.Api\Vega.A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vega.Engine", "Vega.Engine\Vega.Engine.csproj", "{1D60DF83-D7FB-473D-B70E-07B97E08822B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vega.Gui", "Vega.Gui\Vega.Gui.csproj", "{181287B2-F431-4111-BCCC-CC67D203237D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{1D60DF83-D7FB-473D-B70E-07B97E08822B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1D60DF83-D7FB-473D-B70E-07B97E08822B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1D60DF83-D7FB-473D-B70E-07B97E08822B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{181287B2-F431-4111-BCCC-CC67D203237D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{181287B2-F431-4111-BCCC-CC67D203237D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{181287B2-F431-4111-BCCC-CC67D203237D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{181287B2-F431-4111-BCCC-CC67D203237D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
