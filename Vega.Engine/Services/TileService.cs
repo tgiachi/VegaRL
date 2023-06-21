@@ -2,6 +2,7 @@
 using SadConsole;
 using Vega.Api.Attributes;
 using Vega.Api.Data.Entities.Tiles;
+using Vega.Api.Map.GameObjects;
 using Vega.Api.Utils;
 using Vega.Engine.Interfaces;
 using Vega.Engine.Services.Base;
@@ -70,21 +71,39 @@ public class TileService : BaseDataLoaderVegaService<TileService>, ITileService
         return Task.CompletedTask;
     }
 
-    private ColoredGlyph GetGlyphFromTileId(string tileId)
+    public ColoredGlyph GetGlyphFromTileId(string tileId)
     {
+        if (_tileGlyphs.TryGetValue(tileId, out var cachedGlyph))
+        {
+            return cachedGlyph;
+        }
+
+        ColoredGlyph glyph;
         var backgroundColor = _colorService.GetColorByName(_tiles[tileId].Background);
         var foregroundColor = _colorService.GetColorByName(_tiles[tileId].Foreground);
 
         if (_tileSetMap.TryGetValue(tileId, out var map))
         {
-            var glyph = new ColoredGlyph(backgroundColor, foregroundColor, GetGlyphFromTileSet(map.Glyph));
-            return glyph;
+            glyph = new ColoredGlyph(backgroundColor, foregroundColor, GetGlyphFromTileSet(map.Glyph));
         }
         else
         {
-            var glyph = new ColoredGlyph(backgroundColor, foregroundColor, GetGlyphFromTileSet(_tiles[tileId].Sym));
-            return glyph;
+            glyph = new ColoredGlyph(backgroundColor, foregroundColor, GetGlyphFromTileSet(_tiles[tileId].Sym));
         }
+
+        _tileGlyphs.Add(tileId, glyph);
+        return glyph;
+    }
+
+    public TTerrain GetTerrainFromTileId<TTerrain>(string tileId) where TTerrain : BaseTerrainGameObject, new()
+    {
+        var glyph = GetGlyphFromTileId(tileId);
+        return new TTerrain()
+        {
+            Appearance = {  Background = glyph.Background, Glyph = glyph.Glyph, Foreground = glyph.Foreground,},
+            IsWalkable = _tiles[tileId].IsWalkable,
+            IsTransparent = _tiles[tileId].IsTransparent
+        };
     }
 
     private int GetGlyphFromTileSet(string glyph)
