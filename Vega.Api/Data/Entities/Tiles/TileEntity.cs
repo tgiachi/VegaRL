@@ -7,7 +7,7 @@ namespace Vega.Api.Data.Entities.Tiles;
 [EntityData("tile_def")]
 public class TileEntity : BaseEntity
 {
-    public string Symbol { get; set; } = string.Empty;
+    public string Sym { get; set; } = string.Empty;
 
     [ValidateEntity(typeof(ColorSchemaEntity))]
     public string Background { get; set; } = string.Empty;
@@ -18,4 +18,6 @@ public class TileEntity : BaseEntity
     public bool IsWalkable { get; set; }
 
     public bool IsTransparent { get; set; }
+
+    public override string ToString() => $"Tile: {Name} ({Sym}) {Background} {Foreground}";
 }

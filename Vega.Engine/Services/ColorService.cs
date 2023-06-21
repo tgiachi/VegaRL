@@ -7,7 +7,6 @@ using Vega.Engine.Services.Base;
 
 namespace Vega.Engine.Services;
 
-
 [VegaService(3)]
 public class ColorService : BaseDataLoaderVegaService<ColorService>, IColorService
 {
@@ -16,7 +15,6 @@ public class ColorService : BaseDataLoaderVegaService<ColorService>, IColorServi
 
     public ColorService(ILogger<ColorService> logger, IDataService dataService) : base(logger, dataService)
     {
-
     }
 
     public override Task<bool> LoadAsync()
@@ -27,11 +25,10 @@ public class ColorService : BaseDataLoaderVegaService<ColorService>, IColorServi
             _colorSchemas.Add(color.Name, color);
         }
 
-        foreach (var color in  _colorSchemas.FirstOrDefault().Value.GetColors())
+        foreach (var color in _colorSchemas.FirstOrDefault().Value.GetColors())
         {
-            Colors.Add(color.Key, color.Value);
+            Colors.Add(color.Key.ToLower(), color.Value);
         }
-
 
 
         return Task.FromResult(true);
@@ -39,6 +36,19 @@ public class ColorService : BaseDataLoaderVegaService<ColorService>, IColorServi
 
     public Task<bool> ReloadAsync()
     {
+        _colorSchemas.Clear();
+        Colors.Clear();
+
         return Task.FromResult(true);
+    }
+
+    public Color GetColorByName(string name)
+    {
+        if (Colors.TryGetValue(name.ToLower(), out var color))
+        {
+            return color;
+        }
+
+        throw new Exception($" Color {name} not found");
     }
 }

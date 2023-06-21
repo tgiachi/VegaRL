@@ -14,10 +14,16 @@ class Program
 {
     private static async Task Main(string[] args)
     {
-        InstancesHolder.Manager = new VegaEngineManager(new LoggerConfiguration(), new VegaEngineOption()
-        {
-            RootDirectory = Path.Join(@"C:\Users\squid\OneDrive\vegarl", "vega")
-        });
+        InstancesHolder.Manager = new VegaEngineManager(
+            new LoggerConfiguration(),
+            new VegaEngineOption()
+            {
+                RootDirectory = Path.Join(
+                    Environment.GetEnvironmentVariable("VEGARL_DATA_DIR") ??
+                    Path.Join(Directory.GetCurrentDirectory(), "vega")
+                )
+            }
+        );
         await InstancesHolder.Manager.Initialize();
 
         var SCREEN_WIDTH = 80 * 2;

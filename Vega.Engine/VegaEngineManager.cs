@@ -130,6 +130,8 @@ public class VegaEngineManager
                 {
                     Log.Logger.Debug("Reloading service {Service}", serviceInstance.GetType().Name);
                     await reloadableService.ReloadAsync();
+
+                    await serviceInstance.LoadAsync();
                 }
             }
         }
