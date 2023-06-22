@@ -3,6 +3,7 @@ using System.Reflection;
 using DaysOfDarkness.Engine.Data.Directories;
 using Humanizer;
 using Microsoft.Extensions.Logging;
+using SadRogue.Integration;
 using Vega.Api.Attributes;
 using Vega.Api.Data.Directories;
 using Vega.Api.Data.Entities.Base;
@@ -88,7 +89,7 @@ public class DataService : BaseVegaReloadableService<DataService>, IDataService
         _messageBusService.Send(new DataLoadedEvent());
     }
 
-    private void InsertRawData(Type type, List<string> data)
+    private void InsertRawData(Type type, IEnumerable<string> data)
     {
         if (!_rawData.ContainsKey(type))
         {

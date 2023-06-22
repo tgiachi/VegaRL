@@ -6,6 +6,8 @@ using Vega.Api.Attributes;
 using Vega.Api.Data.Config;
 using Vega.Api.Interfaces.DependencyInjection;
 using Vega.Api.Utils;
+using Vega.Engine.Events.Engine;
+using Vega.Engine.Interfaces;
 using Vega.Engine.Interfaces.Services;
 
 namespace Vega.Engine;
@@ -63,8 +65,10 @@ public class VegaEngineManager
             .AddSingleton(directoriesConfig);
 
         _serviceProvider = _serviceCollection.BuildServiceProvider();
-
+        var eventBus = _serviceProvider.GetRequiredService<IMessageBusService>();
+        eventBus.Send(new EngineLoadingEvent());
         await InitializeServices();
+        eventBus.Send(new EngineReadyEvent());
     }
 
     private Task ScanServices()
@@ -91,7 +95,11 @@ public class VegaEngineManager
     public void PreloadFonts(SadConsole.GameHost host)
     {
         Log.Logger.Information("Preloading fonts...");
-        var fonts = Directory.GetFiles(Path.Join(Directory.GetCurrentDirectory(), "Assets"), "*.font", SearchOption.AllDirectories);
+        var fonts = Directory.GetFiles(
+            Path.Join(Directory.GetCurrentDirectory(), "Assets"),
+            "*.font",
+            SearchOption.AllDirectories
+        );
         foreach (var font in fonts)
         {
             Log.Logger.Information("Preloading font {Font}", font);

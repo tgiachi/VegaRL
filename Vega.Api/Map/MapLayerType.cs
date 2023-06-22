@@ -2,5 +2,10 @@
 
 public enum MapLayerType : short
 {
-    Terrain
+    Terrain,
+    Props,
+    Items,
+    Creatures,
+    Effects,
+    Weather,
 }
