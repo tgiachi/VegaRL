@@ -5,6 +5,7 @@ using SadConsole;
 using SadRogue.Primitives;
 using Serilog;
 using Vega.Api.Data.Config;
+using Vega.Api.Utils;
 using Vega.Engine;
 using Console = SadConsole.Console;
 
@@ -14,15 +15,16 @@ class Program
 {
     private static async Task Main(string[] args)
     {
+        var options = new VegaEngineOption()
+        {
+            RootDirectory = Path.Join(
+                Environment.GetEnvironmentVariable("VEGARL_DATA_DIR") ??
+                Path.Join(Directory.GetCurrentDirectory(), "vega")
+            )
+        };
         InstancesHolder.Manager = new VegaEngineManager(
             new LoggerConfiguration(),
-            new VegaEngineOption()
-            {
-                RootDirectory = Path.Join(
-                    Environment.GetEnvironmentVariable("VEGARL_DATA_DIR") ??
-                    Path.Join(Directory.GetCurrentDirectory(), "vega")
-                )
-            }
+            options
         );
         await InstancesHolder.Manager.Initialize();
 
@@ -32,7 +34,8 @@ class Program
         SadConsole.Settings.WindowTitle = "SadConsole Game";
         SadConsole.Settings.UseDefaultExtendedFont = true;
 
-        SadConsole.Game.Create(SCREEN_WIDTH, SCREEN_HEIGHT);
+        SadConsole.Game.Create(SCREEN_WIDTH, SCREEN_HEIGHT, options.Ui.DefaultUiFont);
+
         SadConsole.Game.Instance.OnStart = Init;
         SadConsole.Game.Instance.Run();
         SadConsole.Game.Instance.Dispose();
@@ -40,10 +43,11 @@ class Program
 
     private static void Init()
     {
+        InstancesHolder.Manager.PreloadFonts(Game.Instance);
         // This code uses the default console created for you at start
         var startingConsole = Game.Instance.StartingConsole;
 
-        startingConsole.FillWithRandomGarbage(SadConsole.Game.Instance.StartingConsole.Font);
+        startingConsole.FillWithRandomGarbage(SadConsole.Game.Instance.Fonts.Values.RandomElement());
         startingConsole.Fill(new Rectangle(3, 3, 23, 3), Color.Violet, Color.Black, 0, Mirror.None);
         startingConsole.Print(4, 4, "Hello from SadConsole");
 

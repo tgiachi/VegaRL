@@ -88,6 +88,17 @@ public class VegaEngineManager
         return Task.CompletedTask;
     }
 
+    public void PreloadFonts(SadConsole.GameHost host)
+    {
+        Log.Logger.Information("Preloading fonts...");
+        var fonts = Directory.GetFiles(Path.Join(Directory.GetCurrentDirectory(), "Assets"), "*.font", SearchOption.AllDirectories);
+        foreach (var font in fonts)
+        {
+            Log.Logger.Information("Preloading font {Font}", font);
+            host.LoadFont(font.Replace(Directory.GetCurrentDirectory() + "\\", ""));
+        }
+    }
+
     private Task InitializeServices()
     {
         foreach (var service in _servicesTypes)

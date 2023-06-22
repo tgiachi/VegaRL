@@ -2,6 +2,7 @@
 using SadConsole;
 using Vega.Api.Attributes;
 using Vega.Api.Data.Entities.Tiles;
+using Vega.Api.Interfaces.Entities;
 using Vega.Api.Map.GameObjects;
 using Vega.Api.Utils;
 using Vega.Engine.Interfaces;
@@ -45,7 +46,7 @@ public class TileService : BaseDataLoaderVegaService<TileService>, ITileService
         {
             _tiles.Add(tile.Id, tile);
 
-            _tileGlyphs.Add(tile.Id, GetGlyphFromTileId(tile.Id));
+            GetGlyphFromTileId(tile.Id);
         }
 
         return Task.CompletedTask;
@@ -100,10 +101,29 @@ public class TileService : BaseDataLoaderVegaService<TileService>, ITileService
         var glyph = GetGlyphFromTileId(tileId);
         return new TTerrain()
         {
-            Appearance = {  Background = glyph.Background, Glyph = glyph.Glyph, Foreground = glyph.Foreground,},
+            Appearance = { Background = glyph.Background, Glyph = glyph.Glyph, Foreground = glyph.Foreground, },
             IsWalkable = _tiles[tileId].IsWalkable,
             IsTransparent = _tiles[tileId].IsTransparent
         };
+    }
+
+    public ColoredGlyph GetGlyphFromHasTileEntity<TEntity>(TEntity entity) where TEntity : IHasTileEntity
+    {
+        if (entity.TileId != null)
+        {
+            return GetGlyphFromTileId(entity.TileId);
+        }
+
+        if (entity.Sym != null)
+        {
+            return new ColoredGlyph(
+                _colorService.GetColorByName(entity.Background),
+                _colorService.GetColorByName(entity.Foreground),
+                GetGlyphFromTileSet(entity.Sym)
+            );
+        }
+
+        throw new Exception("No tileId or sym found");
     }
 
     private int GetGlyphFromTileSet(string glyph)

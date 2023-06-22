@@ -1,4 +1,5 @@
 ﻿using Vega.Api.Interfaces.Entities;
+using Vega.Api.Interfaces.Entities.Base;
 
 namespace Vega.Api.Data.Entities.Base;
 

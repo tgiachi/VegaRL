@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Vega.Api.Interfaces.Entities;
+namespace Vega.Api.Interfaces.Entities.Base;
 
 
 /// <summary>

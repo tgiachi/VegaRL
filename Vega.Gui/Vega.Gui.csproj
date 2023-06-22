@@ -8,6 +8,7 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+        <PackageReference Include="SadConsole" Version="9.2.2" />
         <PackageReference Include="SadConsole.Host.MonoGame" Version="9.2.2" />
         <PackageReference Include="Serilog.Extensions.Hosting" Version="7.0.0" />
         <PackageReference Include="Serilog.Extensions.Logging" Version="7.0.0" />
@@ -16,6 +17,10 @@
     <ItemGroup>
       <ProjectReference Include="..\Vega.Api\Vega.Api.csproj" />
       <ProjectReference Include="..\Vega.Engine\Vega.Engine.csproj" />
+    </ItemGroup>
+    
+    <ItemGroup>
+        <None Include="Assets\**" CopyToOutputDirectory="Always" />
     </ItemGroup>
 
 </Project>
