@@ -6,4 +6,6 @@ public class VegaEngineOption
 
     public VegaUiOption Ui { get; set; } = new();
 
+    public string DefaultLanguage { get; set; } = "en";
+
 }

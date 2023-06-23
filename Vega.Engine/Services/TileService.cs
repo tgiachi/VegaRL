@@ -17,8 +17,8 @@ public class TileService : BaseDataLoaderVegaService<TileService>, ITileService
 
     private readonly IColorService _colorService;
     private readonly Dictionary<string, TileSetEntity> _tileSetEntities = new();
-    private readonly Dictionary<string, TileEntity> _tiles = new();
-    private readonly Dictionary<string, ColoredGlyph> _tileGlyphs = new();
+
+    private readonly Dictionary<string, ColoredGlyph> _tileGlyphsCache = new();
 
     private readonly Dictionary<string, TileMapEntity> _tileSetMap = new();
 
@@ -35,22 +35,10 @@ public class TileService : BaseDataLoaderVegaService<TileService>, ITileService
     public override Task<bool> LoadAsync()
     {
         LoadTileSetsAsync();
-        LoadTilesAsync();
 
         return Task.FromResult(true);
     }
 
-    private Task LoadTilesAsync()
-    {
-        foreach (var tile in LoadData<TileEntity>())
-        {
-            _tiles.Add(tile.Id, tile);
-
-            GetGlyphFromTileId(tile.Id);
-        }
-
-        return Task.CompletedTask;
-    }
 
     private Task LoadTileSetsAsync()
     {
@@ -72,55 +60,51 @@ public class TileService : BaseDataLoaderVegaService<TileService>, ITileService
         return Task.CompletedTask;
     }
 
-    public ColoredGlyph GetGlyphFromTileId(string tileId)
+
+    public (ColoredGlyph, bool isTransparent, bool isWalkable) GetTile<TTile>(TTile entity) where TTile : IHasTileEntity
     {
-        if (_tileGlyphs.TryGetValue(tileId, out var cachedGlyph))
-        {
-            return cachedGlyph;
-        }
-
-        ColoredGlyph glyph;
-        var backgroundColor = _colorService.GetColorByName(_tiles[tileId].Background);
-        var foregroundColor = _colorService.GetColorByName(_tiles[tileId].Foreground);
-
-        if (_tileSetMap.TryGetValue(tileId, out var map))
-        {
-            glyph = new ColoredGlyph(backgroundColor, foregroundColor, GetGlyphFromTileSet(map.Glyph));
-        }
-        else
-        {
-            glyph = new ColoredGlyph(backgroundColor, foregroundColor, GetGlyphFromTileSet(_tiles[tileId].Sym));
-        }
-
-        _tileGlyphs.Add(tileId, glyph);
-        return glyph;
+        var coloredGlyph = GetGlyphFromHasTileEntity(entity);
+        return (coloredGlyph, entity.IsTransparent, entity.IsWalkable);
     }
 
-    public TTerrain GetTerrainFromTileId<TTerrain>(string tileId) where TTerrain : BaseTerrainGameObject, new()
+    public BaseTerrainGameObject GetTerrainFromTileId<TTerrain>() where TTerrain : IHasTileEntity, new()
     {
-        var glyph = GetGlyphFromTileId(tileId);
-        return new TTerrain()
-        {
-            Appearance = { Background = glyph.Background, Glyph = glyph.Glyph, Foreground = glyph.Foreground, },
-            IsWalkable = _tiles[tileId].IsWalkable,
-            IsTransparent = _tiles[tileId].IsTransparent
-        };
+        return null;
     }
 
     public ColoredGlyph GetGlyphFromHasTileEntity<TEntity>(TEntity entity) where TEntity : IHasTileEntity
     {
-        if (entity.TileId != null)
+        if (_tileSetMap.TryGetValue(entity.Id, out var tileMap))
         {
-            return GetGlyphFromTileId(entity.TileId);
+            if (_tileGlyphsCache.TryGetValue(tileMap.TileId + "_tileset", out var tileColoredGlyph))
+            {
+                return tileColoredGlyph;
+            }
+
+            var tiledGlyph = new ColoredGlyph(
+                _colorService.GetColorByName(tileMap.Background),
+                _colorService.GetColorByName(tileMap.Foreground),
+                GetGlyphFromTileSet(tileMap.Glyph)
+            );
+            _tileGlyphsCache.Add(tileMap.TileId + "_tileset", tiledGlyph);
+            return tiledGlyph;
         }
+
 
         if (entity.Sym != null)
         {
-            return new ColoredGlyph(
+            if (_tileGlyphsCache.TryGetValue(entity.Id, out var symColoredGlyph))
+            {
+                return symColoredGlyph;
+            }
+
+            var scg = new ColoredGlyph(
                 _colorService.GetColorByName(entity.Background),
                 _colorService.GetColorByName(entity.Foreground),
                 GetGlyphFromTileSet(entity.Sym)
             );
+            _tileGlyphsCache.Add(entity.Id, scg);
+            return scg;
         }
 
         throw new Exception("No tileId or sym found");

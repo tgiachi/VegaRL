@@ -9,9 +9,10 @@ public interface ITileService : IVegaService, IVegaReloadableService
 {
     string SelectedTileSetId { get; }
 
-    ColoredGlyph GetGlyphFromTileId(string tileId);
 
-    TTerrain GetTerrainFromTileId<TTerrain>(string tileId) where TTerrain : BaseTerrainGameObject, new();
+    (ColoredGlyph, bool isTransparent, bool isWalkable) GetTile<TTile>(TTile entity) where TTile : IHasTileEntity;
+
+    BaseTerrainGameObject GetTerrainFromTileId<TTerrain>() where TTerrain : IHasTileEntity, new();
 
     ColoredGlyph GetGlyphFromHasTileEntity<TEntity>(TEntity entity) where TEntity : IHasTileEntity;
 }

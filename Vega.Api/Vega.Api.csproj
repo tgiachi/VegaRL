@@ -14,4 +14,8 @@
         <PackageReference Include="TheSadRogue.Integration" Version="1.0.0-beta04-debug" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Data\Entities\Keybindings\" />
+    </ItemGroup>
+
 </Project>
