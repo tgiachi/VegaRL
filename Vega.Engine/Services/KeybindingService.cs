@@ -1,6 +1,19 @@
-﻿namespace Vega.Engine.Services;
+﻿using Microsoft.Extensions.Logging;
+using Vega.Api.Attributes;
+using Vega.Engine.Interfaces;
+using Vega.Engine.Services.Base;
 
-public class KeybindingService
+namespace Vega.Engine.Services;
+
+[VegaService(4)]
+public class KeybindingService : BaseDataLoaderVegaService<KeybindingService>, IKeybindingService
 {
-    
+    private readonly IServiceProvider _serviceProvider;
+
+    public KeybindingService(
+        ILogger<KeybindingService> logger, IDataService dataService, IServiceProvider serviceProvider
+    ) : base(logger, dataService)
+    {
+        _serviceProvider = serviceProvider;
+    }
 }

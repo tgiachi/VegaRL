@@ -1,6 +1,8 @@
-﻿namespace Vega.Engine.Interfaces;
+﻿using Vega.Engine.Interfaces.Services;
 
-public class IKeybindingService
+namespace Vega.Engine.Interfaces;
+
+public interface IKeybindingService : IVegaService
 {
-    
+
 }

@@ -2,5 +2,5 @@
 
 public interface IKeybindingAction
 {
-    
+    Task ExecuteAsync(string command);
 }
