@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Vega.Api.Data.Entities.Base;
+using Vega.Api.Interfaces.Entities.Base;
 using Vega.Engine.Interfaces;
 
 namespace Vega.Engine.Services.Base;
@@ -12,5 +13,5 @@ public abstract class BaseDataLoaderVegaService<TService> :BaseVegaService<TServ
         _dataService = dataService;
     }
 
-    protected List<TEntity> LoadData<TEntity>() where TEntity : BaseEntity => _dataService.GetData<TEntity>();
+    protected List<TEntity> LoadData<TEntity>() where TEntity : IBaseEntity => _dataService.GetData<TEntity>();
 }

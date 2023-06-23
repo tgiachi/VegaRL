@@ -7,6 +7,7 @@ using SadRogue.Integration;
 using Vega.Api.Attributes;
 using Vega.Api.Data.Directories;
 using Vega.Api.Data.Entities.Base;
+using Vega.Api.Interfaces.Entities.Base;
 using Vega.Api.Utils;
 using Vega.Api.Utils.Json;
 using Vega.Engine.Events;
@@ -105,7 +106,7 @@ public class DataService : BaseVegaReloadableService<DataService>, IDataService
         return Task.FromResult(true);
     }
 
-    public List<TEntity> GetData<TEntity>() where TEntity : BaseEntity
+    public List<TEntity> GetData<TEntity>() where TEntity : IBaseEntity
     {
         var type = typeof(TEntity);
 

@@ -1,9 +1,11 @@
 ﻿using Microsoft.Extensions.Logging;
 using SadConsole;
 using Vega.Api.Attributes;
+using Vega.Api.Data.Entities.Terrain;
 using Vega.Api.Data.Entities.Tiles;
 using Vega.Api.Interfaces.Entities;
 using Vega.Api.Map.GameObjects;
+using Vega.Api.Map.GameObjects.Terrain;
 using Vega.Api.Utils;
 using Vega.Engine.Interfaces;
 using Vega.Engine.Services.Base;
@@ -17,10 +19,9 @@ public class TileService : BaseDataLoaderVegaService<TileService>, ITileService
 
     private readonly IColorService _colorService;
     private readonly Dictionary<string, TileSetEntity> _tileSetEntities = new();
-
     private readonly Dictionary<string, ColoredGlyph> _tileGlyphsCache = new();
-
     private readonly Dictionary<string, TileMapEntity> _tileSetMap = new();
+    private readonly Dictionary<string, TerrainEntity> _terrainEntities = new();
 
 
     public TileService(ILogger<TileService> logger, IDataService dataService, IColorService colorService) : base(
@@ -35,8 +36,19 @@ public class TileService : BaseDataLoaderVegaService<TileService>, ITileService
     public override Task<bool> LoadAsync()
     {
         LoadTileSetsAsync();
+        LoadTerrainAsync();
 
         return Task.FromResult(true);
+    }
+
+    private Task LoadTerrainAsync()
+    {
+        foreach (var terrain in LoadData<TerrainEntity>())
+        {
+            _terrainEntities.Add(terrain.Id, terrain);
+        }
+
+        return Task.CompletedTask;
     }
 
 

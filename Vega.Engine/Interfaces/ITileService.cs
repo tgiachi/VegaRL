@@ -1,6 +1,7 @@
 ﻿using SadConsole;
 using Vega.Api.Interfaces.Entities;
 using Vega.Api.Map.GameObjects;
+using Vega.Api.Map.GameObjects.Terrain;
 using Vega.Engine.Interfaces.Services;
 
 namespace Vega.Engine.Interfaces;

@@ -1,6 +1,6 @@
 ﻿namespace Vega.Api.Data.Entities.Base;
 
-public interface ICategoryEntity
+public interface IHasCategory
 {
     string Category { get; set; }
 
