@@ -1,11 +1,12 @@
 ﻿using Vega.Api.Attributes;
 using Vega.Api.Data.Entities.Base;
+using Vega.Api.Data.Entities.Items;
 using Vega.Api.Interfaces.Entities;
 
-namespace Vega.Api.Data.Entities.Items;
+namespace Vega.Api.Data.Entities.Furniture;
 
-[EntityData("item")]
-public class Item : BaseEntity, IHasTile, IHasCategory
+[EntityData("furniture")]
+public class FurnitureEntity : BaseEntity, IHasTile, IHasCategory
 {
     public string? Sym { get; set; }
     public string? Background { get; set; }
@@ -19,5 +20,7 @@ public class Item : BaseEntity, IHasTile, IHasCategory
 
     public double Weight { get; set; }
 
-    private double Price { get; set; }
+    public List<ItemDropEntity>? Container { get; set; }
+
+
 }

@@ -73,18 +73,18 @@ public class TileService : BaseDataLoaderVegaService<TileService>, ITileService
     }
 
 
-    public (ColoredGlyph, bool isTransparent, bool isWalkable) GetTile<TTile>(TTile entity) where TTile : IHasTileEntity
+    public (ColoredGlyph, bool isTransparent, bool isWalkable) GetTile<TTile>(TTile entity) where TTile : IHasTile
     {
         var coloredGlyph = GetGlyphFromHasTileEntity(entity);
         return (coloredGlyph, entity.IsTransparent, entity.IsWalkable);
     }
 
-    public BaseTerrainGameObject GetTerrainFromTileId<TTerrain>() where TTerrain : IHasTileEntity, new()
+    public BaseTerrainGameObject GetTerrainFromTileId<TTerrain>() where TTerrain : IHasTile, new()
     {
         return null;
     }
 
-    public ColoredGlyph GetGlyphFromHasTileEntity<TEntity>(TEntity entity) where TEntity : IHasTileEntity
+    public ColoredGlyph GetGlyphFromHasTileEntity<TEntity>(TEntity entity) where TEntity : IHasTile
     {
         if (_tileSetMap.TryGetValue(entity.Id, out var tileMap))
         {

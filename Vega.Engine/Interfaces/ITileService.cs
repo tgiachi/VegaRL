@@ -11,9 +11,9 @@ public interface ITileService : IVegaService, IVegaReloadableService
     string SelectedTileSetId { get; }
 
 
-    (ColoredGlyph, bool isTransparent, bool isWalkable) GetTile<TTile>(TTile entity) where TTile : IHasTileEntity;
+    (ColoredGlyph, bool isTransparent, bool isWalkable) GetTile<TTile>(TTile entity) where TTile : IHasTile;
 
-    BaseTerrainGameObject GetTerrainFromTileId<TTerrain>() where TTerrain : IHasTileEntity, new();
+    BaseTerrainGameObject GetTerrainFromTileId<TTerrain>() where TTerrain : IHasTile, new();
 
-    ColoredGlyph GetGlyphFromHasTileEntity<TEntity>(TEntity entity) where TEntity : IHasTileEntity;
+    ColoredGlyph GetGlyphFromHasTileEntity<TEntity>(TEntity entity) where TEntity : IHasTile;
 }

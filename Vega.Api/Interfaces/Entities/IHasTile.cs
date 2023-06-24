@@ -1,6 +1,6 @@
 ﻿namespace Vega.Api.Interfaces.Entities;
 
-public interface IHasTileEntity
+public interface IHasTile
 {
     string Id { get; set; }
     string? Sym { get; set; }

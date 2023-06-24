@@ -6,7 +6,7 @@ using Vega.Api.Interfaces.Entities.Base;
 namespace Vega.Api.Data.Entities.Terrain;
 
 [EntityData("terrain_def")]
-public class TerrainEntity : BaseEntity, IHasTileEntity
+public class TerrainEntity : BaseEntity, IHasTile
 {
     public string? Sym { get; set; }
     public string? Background { get; set; }
