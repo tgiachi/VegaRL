@@ -1,22 +1,16 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Serilog;
 using Vega.Api.Attributes;
 using Vega.Api.Interfaces.DependencyInjection;
+using Vega.Api.Utils;
 
-namespace Vega.Gui.Modules;
+namespace Vega.Engine.Modules;
 
 [ContainerModule]
-public class LoggerModule : IModule
+public class TextProducersModuleLoader : IModule
 {
     public IServiceCollection Load(IServiceCollection services)
     {
-        services.AddLogging(
-            builder =>
-            {
-                builder.AddSerilog();
-            }
-        );
-
+        AssemblyUtils.GetAttribute<TextProducerAttribute>().ForEach(s => services.AddSingleton(s));
         return services;
     }
 }

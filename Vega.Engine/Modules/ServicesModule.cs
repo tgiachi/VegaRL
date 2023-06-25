@@ -6,7 +6,7 @@ using Vega.Engine.Interfaces.Services;
 
 namespace Vega.Engine.Modules;
 
-[DiModule]
+[ContainerModule]
 public class ServicesModule : IModule
 {
     public IServiceCollection Load(IServiceCollection services)

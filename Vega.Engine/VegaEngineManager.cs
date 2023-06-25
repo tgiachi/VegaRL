@@ -33,7 +33,7 @@ public class VegaEngineManager
     {
         Log.Logger.Information("Loading modules...");
 
-        var modules = AssemblyUtils.GetAttribute<DiModuleAttribute>();
+        var modules = AssemblyUtils.GetAttribute<ContainerModuleAttribute>();
 
         foreach (var module in modules)
         {

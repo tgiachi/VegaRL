@@ -2,7 +2,7 @@
 
 namespace Vega.Engine.Interfaces;
 
-public interface ISaveLoadService : IVegaService
+public interface ITextProducerService : IVegaService
 {
-    
+
 }

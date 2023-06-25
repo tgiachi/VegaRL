@@ -2,6 +2,6 @@
 
 
 [AttributeUsage(AttributeTargets.Class)]
-public class DiModuleAttribute : Attribute
+public class ContainerModuleAttribute : Attribute
 {
 }

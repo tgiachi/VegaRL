@@ -5,7 +5,7 @@ using Vega.Api.Utils;
 
 namespace Vega.Engine.Modules;
 
-[DiModule]
+[ContainerModule]
 public class KeybindingLoader : IModule
 {
     public IServiceCollection Load(IServiceCollection services)
