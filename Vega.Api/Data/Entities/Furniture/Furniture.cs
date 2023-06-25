@@ -1,6 +1,6 @@
 ﻿using Vega.Api.Attributes;
 using Vega.Api.Data.Entities.Base;
-using Vega.Api.Data.Entities.Items;
+
 using Vega.Api.Interfaces.Entities;
 
 namespace Vega.Api.Data.Entities.Furniture;
@@ -20,7 +20,6 @@ public class FurnitureEntity : BaseEntity, IHasTile, IHasCategory
 
     public double Weight { get; set; }
 
-    public List<ItemDropEntity>? Container { get; set; }
-
-
+    public Dictionary<string, PropEntity>? Container { get; set; }
+    
 }
