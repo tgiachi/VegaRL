@@ -3,5 +3,7 @@
 public enum DirectoryNameType
 {
     Root,
-    Data
+    Data,
+    Saves,
+    Mods
 }

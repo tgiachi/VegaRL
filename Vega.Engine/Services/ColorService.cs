@@ -52,6 +52,6 @@ public class ColorService : BaseDataLoaderVegaService<ColorService>, IColorServi
             return color;
         }
 
-        throw new Exception($" Color {name} not found");
+        throw new Exception($"Color {name} not found");
     }
 }

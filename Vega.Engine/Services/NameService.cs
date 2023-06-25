@@ -9,7 +9,7 @@ namespace Vega.Engine.Services;
 [VegaService(4)]
 public class NameService : BaseDataLoaderVegaService<NameService>, INameService
 {
-    public Dictionary<(NameTypeEnum, GenderTypeEnum), List<string>> _names = new();
+    private readonly Dictionary<(NameTypeEnum, GenderTypeEnum), List<string>> _names = new();
 
     public NameService(ILogger<NameService> logger, IDataService dataService) : base(logger, dataService)
     {
