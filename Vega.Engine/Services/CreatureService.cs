@@ -17,15 +17,17 @@ public class CreatureService : BaseDataLoaderVegaService<CreatureService>, ICrea
 
     private readonly ITileService _tileService;
     private readonly IItemService _itemService;
+    private readonly INameService _nameService;
 
     public CreatureService(
         ILogger<CreatureService> logger, IDataService dataService, IMessageBusService messageBusService,
-        IItemService itemService, ITileService tileService
+        IItemService itemService, ITileService tileService, INameService nameService
     ) :
         base(logger, dataService, messageBusService)
     {
         _itemService = itemService;
         _tileService = tileService;
+        _nameService = nameService;
     }
 
     public override Task<bool> LoadAsync()
@@ -52,6 +54,8 @@ public class CreatureService : BaseDataLoaderVegaService<CreatureService>, ICrea
                 false,
                 false
             );
+
+
 
             return creatureGameObject;
         }

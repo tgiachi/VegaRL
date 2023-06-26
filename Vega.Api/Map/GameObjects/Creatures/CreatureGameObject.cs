@@ -6,6 +6,8 @@ namespace Vega.Api.Map.GameObjects.Creatures;
 
 public class CreatureGameObject : BaseGridGameObject
 {
+    public string Name { get; set; }
+
     public CreatureGameObject(
         string objectId, string symbol, ColoredGlyph appearance, Point position, bool isWalkable,
         bool isTransparent
