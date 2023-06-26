@@ -13,12 +13,8 @@ public class ItemEntity : BaseEntity, IHasTile, IHasCategory
     public string? Foreground { get; set; }
     public bool IsWalkable { get; set; }
     public bool IsTransparent { get; set; }
-
     public string Category { get; set; }
-
     public string? SubCategory { get; set; }
-
     public double Weight { get; set; }
-
     public double Price { get; set; }
 }

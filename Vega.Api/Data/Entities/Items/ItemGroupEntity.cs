@@ -6,5 +6,5 @@ namespace Vega.Api.Data.Entities.Items;
 [EntityData("item_group")]
 public class ItemGroupEntity : BaseEntity
 {
-    public Dictionary<string, PropEntity> Items { get; set; } = new();
+    public List<string> Ids { get; set; } = new();
 }

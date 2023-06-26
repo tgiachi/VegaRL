@@ -36,7 +36,7 @@ public class ItemService : BaseDataLoaderVegaService<ItemService>, IItemService
         return true;
     }
 
-    public ItemGameObject GetItemGameObject(string itemId, Point position)
+    public ItemGameObject CreateItemGameObject(string itemId, Point position)
     {
         if (_items.TryGetValue(itemId.ToLower(), out var itemEntity))
         {
@@ -55,7 +55,7 @@ public class ItemService : BaseDataLoaderVegaService<ItemService>, IItemService
         throw new Exception($" Item with id {itemId} not found.");
     }
 
-    public List<ItemEntity> GetItemsFromDrop(List<ItemDropEntity> itemDrops)
+    public IEnumerable<ItemEntity> GetItemsFromDrop(List<ItemDropEntity> itemDrops)
     {
         var resultBag = new List<ItemEntity>();
 
@@ -88,11 +88,11 @@ public class ItemService : BaseDataLoaderVegaService<ItemService>, IItemService
         return resultBag;
     }
 
-    public List<ItemEntity> GetItemsFromItemGroupId(string itemGroupId)
+    public IEnumerable<ItemEntity> GetItemsFromItemGroupId(string itemGroupId)
     {
         if (_itemGroups.TryGetValue(itemGroupId.ToLower(), out var itemGroup))
         {
-            return itemGroup.Items.Select(s => GetItemWithClass(s.Key)).ToList();
+            return itemGroup.Ids.Select(GetItemWithClass).ToList();
         }
 
         throw new Exception("Item group not found.");
@@ -113,7 +113,36 @@ public class ItemService : BaseDataLoaderVegaService<ItemService>, IItemService
     {
         foreach (var groupEntity in LoadData<ItemGroupEntity>())
         {
-            _itemGroups.Add(groupEntity.Id.ToLower(), groupEntity);
+            try
+            {
+                foreach (var itemId in groupEntity.Ids)
+                {
+                    if (_items.ContainsKey(itemId.ToLower()))
+                    {
+                        continue;
+                    }
+
+                    throw new Exception($" Item with id {itemId} not found.");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error loading item group {groupEntity.Id}", ex);
+            }
+            finally
+            {
+                _itemGroups.Add(groupEntity.Id.ToLower(), groupEntity);
+            }
+        }
+
+        return Task.CompletedTask;
+    }
+
+    private Task LoadItems()
+    {
+        foreach (var itemEntity in LoadData<ItemEntity>())
+        {
+            _items.Add(itemEntity.Id.ToLower(), itemEntity);
         }
 
         return Task.CompletedTask;
@@ -136,33 +165,25 @@ public class ItemService : BaseDataLoaderVegaService<ItemService>, IItemService
             IsWalkable = item.IsWalkable,
             IsTransparent = item.IsTransparent,
             Category = item.Category,
-            SubCategory = item.SubCategory
+            SubCategory = item.SubCategory,
+            Comment = item.Comment,
+            Flags = item.Flags
         };
         if (item.ItemClassId != null)
         {
             // Override item properties with class properties
             var itemClass = _itemClasses[item.ItemClassId.ToLower()];
 
-            itemEntity.Background = itemClass.Background;
-            itemEntity.Foreground = itemClass.Foreground;
-            itemEntity.Sym = itemClass.Sym;
+            itemEntity.Background = itemClass.Background ?? item.Background;
+            itemEntity.Foreground = itemClass.Foreground ?? item.Foreground;
+            itemEntity.Sym = itemClass.Sym ?? item.Sym;
             itemEntity.IsWalkable = itemClass.IsWalkable;
             itemEntity.IsTransparent = itemClass.IsTransparent;
-            itemEntity.Category = itemClass.Category;
-            itemEntity.SubCategory = itemClass.SubCategory;
+            itemEntity.Category = itemClass.Category ?? item.Category;
+            itemEntity.SubCategory = itemClass.SubCategory ?? item.SubCategory;
         }
 
 
         return itemEntity;
-    }
-
-    private Task LoadItems()
-    {
-        foreach (var itemEntity in LoadData<ItemEntity>())
-        {
-            _items.Add(itemEntity.Id.ToLower(), itemEntity);
-        }
-
-        return Task.CompletedTask;
     }
 }
