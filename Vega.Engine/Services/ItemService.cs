@@ -32,7 +32,6 @@ public class ItemService : BaseDataLoaderVegaService<ItemService>, IItemService
         await LoadItems();
         await LoadItemGroups();
 
-
         return true;
     }
 

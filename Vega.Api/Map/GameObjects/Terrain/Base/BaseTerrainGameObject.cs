@@ -10,8 +10,8 @@ public class BaseTerrainGameObject : MemoryAwareRogueLikeCell
     public string TerrainId { get; set; }
 
     public BaseTerrainGameObject(string terrainId,
-        ColoredGlyph appearance, bool walkable = true, bool transparent = true
-    ) : base(appearance, (int)MapLayerType.Terrain, walkable, transparent)
+        ColoredGlyph appearance, int layer, bool walkable = true, bool transparent = true
+    ) : base(appearance, layer, walkable, transparent)
     {
         TerrainId = terrainId;
         Appearance = new TerrainAppearanceDefinition(appearance, MakeColorDark(appearance));

@@ -3,7 +3,7 @@
 public enum MapLayerType : short
 {
     Terrain,
-    Props,
+    Vegetation,
     Furniture,
     Items,
     Creatures,

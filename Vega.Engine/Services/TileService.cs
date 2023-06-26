@@ -4,11 +4,11 @@ using SadConsole;
 using Vega.Api.Attributes;
 using Vega.Api.Data.Entities.Terrain;
 using Vega.Api.Data.Entities.Tiles;
+using Vega.Api.Data.Entities.Vegetation;
 using Vega.Api.Interfaces.Entities;
-using Vega.Api.Map.GameObjects;
 using Vega.Api.Map.GameObjects.Terrain;
 using Vega.Api.Map.GameObjects.Terrain.Base;
-using Vega.Api.Utils;
+using Vega.Api.Map.GameObjects.Vegetation;
 using Vega.Api.Utils.Random;
 using Vega.Engine.Components.Terrain;
 using Vega.Engine.Interfaces;
@@ -28,6 +28,7 @@ public class TileService : BaseDataLoaderVegaService<TileService>, ITileService
     private readonly Dictionary<string, ColoredGlyph> _tileGlyphsCache = new();
     private readonly Dictionary<string, TileMapEntity> _tileSetMap = new();
     private readonly Dictionary<string, TerrainEntity> _terrainEntities = new();
+    private readonly Dictionary<string, VegetationEntity> _vegetationEntities = new();
 
 
     public TileService(
@@ -48,6 +49,7 @@ public class TileService : BaseDataLoaderVegaService<TileService>, ITileService
     {
         LoadTileSetsAsync();
         LoadTerrainAsync();
+        LoadVegetationAsync();
 
         return Task.FromResult(true);
     }
@@ -57,6 +59,16 @@ public class TileService : BaseDataLoaderVegaService<TileService>, ITileService
         foreach (var terrain in LoadData<TerrainEntity>())
         {
             _terrainEntities.Add(terrain.Id, terrain);
+        }
+
+        return Task.CompletedTask;
+    }
+
+    private Task LoadVegetationAsync()
+    {
+        foreach (var vegetation in LoadData<VegetationEntity>())
+        {
+            _vegetationEntities.Add(vegetation.Id.ToLower(), vegetation);
         }
 
         return Task.CompletedTask;
@@ -84,13 +96,14 @@ public class TileService : BaseDataLoaderVegaService<TileService>, ITileService
     }
 
 
-    public (ColoredGlyph coloredGlyph, bool isTransparent, bool isWalkable) GetTile<TTile>(TTile entity) where TTile : IHasTile
+    public (ColoredGlyph coloredGlyph, bool isTransparent, bool isWalkable) GetTile<TTile>(TTile entity)
+        where TTile : IHasTile
     {
         var coloredGlyph = GetGlyphFromHasTileEntity(entity);
         return (coloredGlyph, entity.IsTransparent, entity.IsWalkable);
     }
 
-    public BaseTerrainGameObject GetTerrainFromTileId<TTile>(TTile tile) where TTile : IHasTile, new()
+    public BaseTerrainGameObject CreateTerrainFromTileId<TTile>(TTile tile) where TTile : IHasTile, new()
     {
         var coloredTile = GetTile(tile);
         var terrainGameObject = new TerrainGameObject(tile.Id, coloredTile.Item1, coloredTile.Item2, coloredTile.Item3);
@@ -101,6 +114,23 @@ public class TileService : BaseDataLoaderVegaService<TileService>, ITileService
         );
 
         return terrainGameObject;
+    }
+
+    public VegetationGameObject CreateVegetationFromTileId<TTile>(TTile tile) where TTile : IHasTile, new()
+    {
+        var coloredTile = GetTile(tile);
+        var vegetationGameObject = new VegetationGameObject(
+            tile.Id,
+            coloredTile.coloredGlyph,
+            coloredTile.isWalkable,
+            coloredTile.isTransparent
+        );
+
+        vegetationGameObject.GoRogueComponents.Add(
+            new TerrainDarkAppearanceComponent(_serviceProvider.GetRequiredService<IWorldService>())
+        );
+
+        return vegetationGameObject;
     }
 
     public ColoredGlyph GetGlyphFromHasTileEntity<TEntity>(TEntity entity) where TEntity : IHasTile
