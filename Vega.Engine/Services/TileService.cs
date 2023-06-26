@@ -103,17 +103,49 @@ public class TileService : BaseDataLoaderVegaService<TileService>, ITileService
         return (coloredGlyph, entity.IsTransparent, entity.IsWalkable);
     }
 
-    public BaseTerrainGameObject CreateTerrainFromTileId<TTile>(TTile tile) where TTile : IHasTile, new()
+
+    public TerrainGameObject CreateTerrainFromTileId(string terrainId)
     {
-        var coloredTile = GetTile(tile);
-        var terrainGameObject = new TerrainGameObject(tile.Id, coloredTile.Item1, coloredTile.Item2, coloredTile.Item3);
+        if (_terrainEntities.TryGetValue(terrainId.ToLower(), out var terrainEntity))
+        {
+            var coloredTile = GetTile(terrainEntity);
+            var terrainGameObject = new TerrainGameObject(
+                terrainEntity.Id,
+                coloredTile.coloredGlyph,
+                coloredTile.isTransparent,
+                coloredTile.isWalkable
+            );
+            //TODO: Add component for dynamic color dark and light
+            terrainGameObject.GoRogueComponents.Add(
+                new TerrainDarkAppearanceComponent(_serviceProvider.GetRequiredService<IWorldService>())
+            );
 
-        //TODO: Add component for dynamic color dark and light
-        terrainGameObject.GoRogueComponents.Add(
-            new TerrainDarkAppearanceComponent(_serviceProvider.GetRequiredService<IWorldService>())
-        );
+            return terrainGameObject;
+        }
 
-        return terrainGameObject;
+        throw new Exception($" Terrain with id {terrainId} not found");
+    }
+
+    public VegetationGameObject CreateVegetationFromTileId(string vegetationId)
+    {
+        if (_vegetationEntities.TryGetValue(vegetationId.ToLower(), out var vegetationEntity))
+        {
+            var coloredTile = GetTile(vegetationEntity);
+            var vegetationGameObject = new VegetationGameObject(
+                vegetationEntity.Id,
+                coloredTile.coloredGlyph,
+                coloredTile.isTransparent,
+                coloredTile.isWalkable
+            );
+            //TODO: Add component for dynamic color dark and light
+            vegetationGameObject.GoRogueComponents.Add(
+                new TerrainDarkAppearanceComponent(_serviceProvider.GetRequiredService<IWorldService>())
+            );
+
+            return vegetationGameObject;
+        }
+
+        throw new Exception($" Vegetation with id {vegetationId} not found");
     }
 
     public VegetationGameObject CreateVegetationFromTileId<TTile>(TTile tile) where TTile : IHasTile, new()

@@ -1,6 +1,5 @@
 ﻿using SadConsole;
 using Vega.Api.Interfaces.Entities;
-using Vega.Api.Map.GameObjects;
 using Vega.Api.Map.GameObjects.Terrain;
 using Vega.Api.Map.GameObjects.Terrain.Base;
 using Vega.Api.Map.GameObjects.Vegetation;
@@ -15,9 +14,9 @@ public interface ITileService : IVegaService, IVegaReloadableService
 
     (ColoredGlyph coloredGlyph, bool isTransparent, bool isWalkable) GetTile<TTile>(TTile entity) where TTile : IHasTile;
 
-    BaseTerrainGameObject CreateTerrainFromTileId<TTile>(TTile tile) where TTile : IHasTile, new();
+    TerrainGameObject CreateTerrainFromTileId(string terrainId);
 
-    VegetationGameObject CreateVegetationFromTileId<TTile>(TTile tile) where TTile : IHasTile, new();
+    VegetationGameObject CreateVegetationFromTileId(string vegetationId);
 
     ColoredGlyph GetGlyphFromHasTileEntity<TEntity>(TEntity entity) where TEntity : IHasTile;
 }
