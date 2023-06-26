@@ -24,6 +24,8 @@ public class BaseEntity : IBaseEntity
         return flags.Where(flag => Flags.Any(f => string.Equals(f, flag, StringComparison.OrdinalIgnoreCase))).ToList();
     }
 
+    public bool HasFlag(string flag) => Flags?.Any(f => string.Equals(f, flag, StringComparison.OrdinalIgnoreCase)) ?? false;
+
     public override string ToString() =>
         $" {nameof(Id)}: {Id}, {nameof(Description)}: {Description}, {nameof(Name)}: {Name}, {nameof(Comment)}: {Comment ?? "N/A"}";
 }

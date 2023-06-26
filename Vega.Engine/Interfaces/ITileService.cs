@@ -12,7 +12,7 @@ public interface ITileService : IVegaService, IVegaReloadableService
     string SelectedTileSetId { get; }
 
 
-    (ColoredGlyph, bool isTransparent, bool isWalkable) GetTile<TTile>(TTile entity) where TTile : IHasTile;
+    (ColoredGlyph coloredGlyph, bool isTransparent, bool isWalkable) GetTile<TTile>(TTile entity) where TTile : IHasTile;
 
     BaseTerrainGameObject GetTerrainFromTileId<TTile>(TTile tile) where TTile : IHasTile, new();
 

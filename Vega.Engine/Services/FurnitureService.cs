@@ -93,6 +93,14 @@ public class FurnitureService : BaseDataLoaderVegaService<FurnitureService>, IFu
         if (_furniture.TryGetValue(id.ToLower(), out var furnitureEntity))
         {
             var coloredTile = _tileService.GetTile(furnitureEntity);
+
+            var isDoorGameObject = CreateDoorGameObject(furnitureEntity, position);
+            if (isDoorGameObject != null)
+            {
+                Logger.LogDebug("Creating door game object.");
+                return isDoorGameObject;
+            }
+
             var furnitureGameObject = new FurnitureGameObject(
                 id,
                 furnitureEntity.Sym,
@@ -124,6 +132,47 @@ public class FurnitureService : BaseDataLoaderVegaService<FurnitureService>, IFu
         }
 
         throw new Exception($"Furniture with id {id} not found.");
+    }
+
+    private DoorFurnitureGameObject? CreateDoorGameObject(FurnitureEntity furnitureEntity, Point position)
+    {
+        if (furnitureEntity.HasFlag("DOOR"))
+        {
+            var doorOpenedGlyph = _tileService.GetTile(GetFurnituresWithFlag("DOOR_OPENED").First());
+            var doorClosedColoredGlyph = _tileService.GetTile(GetFurnituresWithFlag("DOOR_CLOSED").First());
+            DoorFurnitureGameObject doorGameObject;
+            if (furnitureEntity.HasFlag("DOOR_CLOSED"))
+            {
+                doorGameObject = new DoorFurnitureGameObject(
+                    furnitureEntity.Id,
+                    furnitureEntity.Sym,
+                    doorClosedColoredGlyph.coloredGlyph,
+                    position,
+                    doorClosedColoredGlyph.isWalkable,
+                    doorClosedColoredGlyph.isTransparent
+                );
+            }
+            else
+            {
+                doorGameObject = new DoorFurnitureGameObject(
+                    furnitureEntity.Id,
+                    furnitureEntity.Sym,
+                    doorOpenedGlyph.coloredGlyph,
+                    position,
+                    doorOpenedGlyph.isWalkable,
+                    doorOpenedGlyph.isTransparent
+                );
+            }
+
+            return doorGameObject;
+        }
+
+        return null;
+    }
+
+    public IEnumerable<FurnitureEntity> GetFurnituresWithFlag(string flag)
+    {
+        return _furniture.Values.Where(f => f.HasFlag(flag)).Select(f => GetFurniture(f.Id));
     }
 
     private Task LoadFurnitureClasses()

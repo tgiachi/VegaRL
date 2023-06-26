@@ -84,7 +84,7 @@ public class TileService : BaseDataLoaderVegaService<TileService>, ITileService
     }
 
 
-    public (ColoredGlyph, bool isTransparent, bool isWalkable) GetTile<TTile>(TTile entity) where TTile : IHasTile
+    public (ColoredGlyph coloredGlyph, bool isTransparent, bool isWalkable) GetTile<TTile>(TTile entity) where TTile : IHasTile
     {
         var coloredGlyph = GetGlyphFromHasTileEntity(entity);
         return (coloredGlyph, entity.IsTransparent, entity.IsWalkable);
