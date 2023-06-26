@@ -2,7 +2,8 @@
 
 public enum GenderTypeEnum
 {
+    None,
     Male,
     Female,
-    Neutral,
+    Unisex,
 }

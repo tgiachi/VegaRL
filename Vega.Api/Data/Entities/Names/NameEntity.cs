@@ -2,11 +2,11 @@
 using Vega.Api.Data.Entities.Base;
 
 namespace Vega.Api.Data.Entities.Names;
-[EntityData("names")]
+[EntityData("name_def")]
 public class NameEntity : BaseEntity
 {
-    public NameTypeEnum NameType { get; set; }
-    public GenderTypeEnum Gender { get; set; }
+    public NameTypeEnum Usage { get; set; }
+    public GenderTypeEnum Gender { get; set; } = GenderTypeEnum.None;
 
     public List<string> Names { get; set; }
 }

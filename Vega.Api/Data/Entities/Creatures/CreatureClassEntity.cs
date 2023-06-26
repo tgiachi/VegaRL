@@ -15,7 +15,7 @@ public class CreatureClassEntity : BaseEntity, IHasTile
     public bool IsWalkable { get; set; } = true;
     public bool IsTransparent { get; set; } = false;
 
-    public GenderTypeEnum GenderTypeEnum { get; set; } = GenderTypeEnum.Neutral;
+    public GenderTypeEnum GenderTypeEnum { get; set; } = GenderTypeEnum.None;
 
     public Dictionary<string, PropEntity> Stats { get; set; } = new();
 

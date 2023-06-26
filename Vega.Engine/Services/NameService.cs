@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Vega.Api.Attributes;
 using Vega.Api.Data.Entities.Names;
+using Vega.Api.Utils.Random;
 using Vega.Engine.Interfaces;
 using Vega.Engine.Services.Base;
 
@@ -23,14 +24,24 @@ public class NameService : BaseDataLoaderVegaService<NameService>, INameService
     {
         foreach (var names in LoadData<NameEntity>())
         {
-            if (!_names.ContainsKey((names.NameType, names.Gender)))
+            if (!_names.ContainsKey((names.Usage, names.Gender)))
             {
-                _names.Add((names.NameType, names.Gender), new List<string>());
+                _names.Add((names.Usage, names.Gender), new List<string>());
             }
 
-            _names[(names.NameType, names.Gender)].AddRange(names.Names);
+            _names[(names.Usage, names.Gender)].AddRange(names.Names);
         }
 
         return Task.FromResult(true);
+    }
+
+    public string RandomName(NameTypeEnum usage, GenderTypeEnum gender = GenderTypeEnum.None)
+    {
+        if (_names.TryGetValue((usage, gender), out var names))
+        {
+            return names.RandomElement();
+        }
+
+        throw new Exception($"Name not found with {usage} and {gender} ");
     }
 }

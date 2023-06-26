@@ -12,7 +12,7 @@ public class CreatureEntity : BaseEntity, IHasTile
     public bool IsWalkable { get; set; }
     public bool IsTransparent { get; set; }
 
-    public GenderTypeEnum GenderTypeEnum { get; set; } = GenderTypeEnum.Neutral;
+    public GenderTypeEnum GenderTypeEnum { get; set; } = GenderTypeEnum.None;
 
     public string? CreatureClassId { get; set; }
 

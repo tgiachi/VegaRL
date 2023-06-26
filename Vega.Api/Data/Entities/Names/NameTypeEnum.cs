@@ -3,7 +3,10 @@
 public enum NameTypeEnum
 {
     World,
+    Backer,
+    Family,
     City,
-    Creature,
     Animal,
+    Given,
+    Nickname,
 }

@@ -203,7 +203,7 @@ public class TileService : BaseDataLoaderVegaService<TileService>, ITileService
         throw new Exception("No tileId or sym found");
     }
 
-    private int GetGlyphFromTileSet(string glyph)
+    private static int GetGlyphFromTileSet(string glyph)
     {
         if (int.TryParse(glyph, out int n))
         {
