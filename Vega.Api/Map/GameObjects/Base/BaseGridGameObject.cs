@@ -9,8 +9,6 @@ public class BaseGridGameObject : RogueLikeEntity
     public string ObjectId { get; set; }
     public string Symbol { get; set; }
 
-    public string TileId { get; set; }
-
     public bool IsAnimated { get; set; } = false;
 
     public List<int> AnimationFrames { get; set; } = new List<int>();

@@ -6,5 +6,5 @@ namespace Vega.Api.Data.Entities.Creatures;
 [EntityData("creature_group")]
 public class CreatureGroupEntity  : BaseEntity
 {
-    public Dictionary<string, PropEntity> Creatures { get; set; } = new();
+    public RandomBagEntity Creatures { get; set; } = new();
 }

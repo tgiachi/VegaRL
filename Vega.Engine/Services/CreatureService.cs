@@ -2,7 +2,10 @@
 using SadRogue.Primitives;
 using Vega.Api.Attributes;
 using Vega.Api.Data.Entities.Creatures;
+using Vega.Api.Data.Entities.Names;
 using Vega.Api.Map.GameObjects.Creatures;
+using Vega.Api.Utils.Random;
+using Vega.Engine.Components.Creatures;
 using Vega.Engine.Interfaces;
 using Vega.Engine.Services.Base;
 
@@ -53,8 +56,15 @@ public class CreatureService : BaseDataLoaderVegaService<CreatureService>, ICrea
                 position,
                 false,
                 false
-            );
-
+            )
+            {
+                Name = _nameService.RandomName(NameTypeEnum.Family, creatureEntity.GenderType)
+            };
+            if (creatureEntity.ItemGroupId != null)
+            {
+                var itemGroup = _itemService.GetItemsFromItemGroupId(creatureEntity.ItemGroupId);
+                creatureGameObject.GoRogueComponents.Add(new InventoryComponent(itemGroup.ToList()));
+            }
 
 
             return creatureGameObject;
@@ -67,8 +77,8 @@ public class CreatureService : BaseDataLoaderVegaService<CreatureService>, ICrea
     {
         if (_creatureGroups.TryGetValue(creatureGroupId.ToLower(), out var creatureGroupEntity))
         {
-            return null;
-            //return creatureGroupEntity.Creatures.Select(s => s.);
+            var creatureIds = creatureGroupEntity.Creatures.BuildPropEntries();
+            return creatureIds.Select(GetCreature);
         }
 
         throw new Exception($"Creature group not found with id {creatureGroupId}");
