@@ -22,6 +22,6 @@ public class FurnitureEntity : BaseEntity, IHasTile, IHasCategory
 
     public double Weight { get; set; }
 
-    public Dictionary<string, PropEntity>? Container { get; set; }
+    public RandomBagEntity? Container { get; set; }
 
 }

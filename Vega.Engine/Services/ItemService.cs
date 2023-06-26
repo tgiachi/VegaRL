@@ -58,31 +58,6 @@ public class ItemService : BaseDataLoaderVegaService<ItemService>, IItemService
     {
         var resultBag = new List<ItemEntity>();
 
-        foreach (var itemDrop in itemDrops.Where(s => s.Probability == null))
-        {
-            if (itemDrop.Count != null)
-            {
-                resultBag.AddRange(Enumerable.Range(0, itemDrop.Count.Value).Select(_ => GetItemWithClass(itemDrop.ItemId)));
-            }
-            else if (itemDrop.Range != null)
-            {
-                resultBag.AddRange(
-                    Enumerable.Range(0, RandomUtils.Range(itemDrop.Range.Min, itemDrop.Range.Max))
-                        .Select(_ => GetItemWithClass(itemDrop.ItemId))
-                );
-            }
-            else if (itemDrop.Dice != null)
-            {
-                resultBag.AddRange(
-                    Enumerable.Range(0, Dice.DiceParser.Parse(itemDrop.Dice).Roll())
-                        .Select(_ => GetItemWithClass(itemDrop.ItemId))
-                );
-            }
-        }
-
-        var probabilityBag = RandomUtils.RandomWeightedElements(1, itemDrops.Where(s => s.Probability != null).ToArray());
-
-        resultBag.AddRange(probabilityBag.Select(s => GetItemWithClass(s.ItemId)));
 
         return resultBag;
     }
@@ -91,11 +66,13 @@ public class ItemService : BaseDataLoaderVegaService<ItemService>, IItemService
     {
         if (_itemGroups.TryGetValue(itemGroupId.ToLower(), out var itemGroup))
         {
-            return itemGroup.Ids.Select(GetItemWithClass).ToList();
+            return itemGroup.Items.BuildPropEntries().Select(GetItemWithClass);
         }
 
         throw new Exception("Item group not found.");
     }
+
+    public ItemEntity GetItem(string itemId) => GetItemWithClass(itemId);
 
 
     private Task LoadItemClasses()
@@ -114,9 +91,9 @@ public class ItemService : BaseDataLoaderVegaService<ItemService>, IItemService
         {
             try
             {
-                foreach (var itemId in groupEntity.Ids)
+                foreach (var itemId in groupEntity.Items.Items)
                 {
-                    if (_items.ContainsKey(itemId.ToLower()))
+                    if (_items.ContainsKey(itemId.Key.ToLower()))
                     {
                         continue;
                     }

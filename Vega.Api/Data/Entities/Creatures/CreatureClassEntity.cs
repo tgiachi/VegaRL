@@ -19,7 +19,7 @@ public class CreatureClassEntity : BaseEntity, IHasTile
 
     public Dictionary<string, PropEntity> Stats { get; set; } = new();
 
-    public string ItemGroupId { get; set; }
+    public string? ItemGroupId { get; set; }
 
     public string? BehaviorTreeId { get; set; }
 

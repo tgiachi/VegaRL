@@ -4,6 +4,7 @@ using Vega.Api.Attributes;
 using Vega.Api.Data.Entities.Furniture;
 using Vega.Api.Data.Entities.Items;
 using Vega.Api.Map.GameObjects.Furniture;
+using Vega.Api.Utils.Random;
 using Vega.Engine.Interfaces;
 using Vega.Engine.Services.Base;
 
@@ -111,21 +112,9 @@ public class FurnitureService : BaseDataLoaderVegaService<FurnitureService>, IFu
             );
             if (furnitureEntity.Container != null)
             {
-                var items = _itemService.GetItemsFromDrop(
-                    furnitureEntity.Container.Select(
-                            s => new ItemDropEntity()
-                            {
-                                ItemId = s.Key,
-                                Count = s.Value.Count,
-                                Probability = s.Value.Probability,
-                                Dice = s.Value.Dice,
-                                Range = s.Value.Range
-                            }
-                        )
-                        .ToList()
-                );
+                var items = furnitureEntity.Container.BuildPropEntries();
 
-                furnitureGameObject.ContainerItems.AddRange(items);
+                furnitureGameObject.ContainerItems.AddRange(items.Select(s => _itemService.GetItem(s)));
             }
 
             return furnitureGameObject;

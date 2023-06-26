@@ -7,7 +7,7 @@ namespace Vega.Api.Data.Entities.Furniture;
 [EntityData("furniture_class")]
 public class FurnitureClassEntity : BaseEntity, IHasTile, IHasCategory
 {
-    public Dictionary<string, PropEntity>? Container { get; set; }
+    public RandomBagEntity? Container { get; set; }
     public string? Sym { get; set; }
     public string? Background { get; set; }
     public string? Foreground { get; set; }

@@ -6,5 +6,5 @@ namespace Vega.Api.Data.Entities.Items;
 [EntityData("item_group")]
 public class ItemGroupEntity : BaseEntity
 {
-    public List<string> Ids { get; set; } = new();
+    public RandomBagEntity Items { get; set; } = new();
 }

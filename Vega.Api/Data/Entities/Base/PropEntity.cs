@@ -6,7 +6,7 @@ namespace Vega.Api.Data.Entities.Base;
 
 public class PropEntity
 {
-    public int? Count { get; set; }
+    public int Count { get; set; } = 1;
 
     [JsonPropertyName("prob")] public double? Probability { get; set; }
 

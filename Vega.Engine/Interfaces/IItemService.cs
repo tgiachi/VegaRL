@@ -10,4 +10,5 @@ public interface IItemService : IVegaService
     ItemGameObject CreateItemGameObject(string itemId, Point position);
     IEnumerable<ItemEntity> GetItemsFromDrop(List<ItemDropEntity> itemDrops);
     IEnumerable<ItemEntity> GetItemsFromItemGroupId(string itemGroupId);
+    ItemEntity GetItem(string itemId);
 }
