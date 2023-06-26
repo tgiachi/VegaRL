@@ -11,6 +11,7 @@ using Vega.Api.Interfaces.Entities.Base;
 using Vega.Api.Utils;
 using Vega.Api.Utils.Json;
 using Vega.Engine.Events;
+using Vega.Engine.Events.Data;
 using Vega.Engine.Interfaces;
 using Vega.Engine.Services.Base;
 
@@ -27,7 +28,7 @@ public class DataService : BaseVegaReloadableService<DataService>, IDataService
 
     public DataService(
         ILogger<DataService> logger, IMessageBusService messageBusService, DirectoriesConfig directoriesConfig
-    ) : base(logger)
+    ) : base(logger, messageBusService)
     {
         _messageBusService = messageBusService;
         _directoriesConfig = directoriesConfig;
@@ -73,7 +74,7 @@ public class DataService : BaseVegaReloadableService<DataService>, IDataService
 
         Logger.LogInformation("Loading {Count} files", files.Length);
 
-        _messageBusService.Send(new LoadingDataEvent());
+        _messageBusService.Send(new DataLoadingEvent());
         foreach (var file in files)
         {
             try

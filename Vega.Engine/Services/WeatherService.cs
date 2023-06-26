@@ -13,7 +13,7 @@ public class WeatherService : BaseVegaService<WeatherService>, IWeatherService
     public double WindSpeed { get; private set; }
     public double WindDirection { get; private set; }
 
-    public WeatherService(ILogger<WeatherService> logger) : base(logger)
+    public WeatherService(ILogger<WeatherService> logger, IMessageBusService messageBusService) : base(logger, messageBusService)
     {
     }
 }

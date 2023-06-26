@@ -11,7 +11,11 @@ public class NameService : BaseDataLoaderVegaService<NameService>, INameService
 {
     private readonly Dictionary<(NameTypeEnum, GenderTypeEnum), List<string>> _names = new();
 
-    public NameService(ILogger<NameService> logger, IDataService dataService) : base(logger, dataService)
+    public NameService(ILogger<NameService> logger, IDataService dataService, IMessageBusService messageBusService) : base(
+        logger,
+        dataService,
+        messageBusService
+    )
     {
     }
 

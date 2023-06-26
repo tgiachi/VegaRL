@@ -15,7 +15,7 @@ public class ColorService : BaseDataLoaderVegaService<ColorService>, IColorServi
     private readonly Dictionary<string, ColorSchemaEntity> _colorSchemas = new();
     public Dictionary<string, Color> Colors { get; } = new();
 
-    public ColorService(ILogger<ColorService> logger, IDataService dataService, VegaEngineOption vegaEngineOption) : base(logger, dataService)
+    public ColorService(ILogger<ColorService> logger, IDataService dataService, VegaEngineOption vegaEngineOption, MessageBusService messageBusService) : base(logger, dataService, messageBusService)
     {
         _vegaEngineOption = vegaEngineOption;
     }

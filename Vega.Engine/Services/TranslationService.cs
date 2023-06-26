@@ -28,9 +28,10 @@ public partial class TranslationService : BaseDataLoaderVegaService<TranslationS
     private Dictionary<string, string> _translations = new();
 
 
-    public TranslationService(ILogger<TranslationService> logger, IDataService dataService, VegaEngineOption options) : base(
+    public TranslationService(ILogger<TranslationService> logger, IDataService dataService, VegaEngineOption options, IMessageBusService messageBusService) : base(
         logger,
-        dataService
+        dataService,
+        messageBusService
     )
     {
         _options = options;

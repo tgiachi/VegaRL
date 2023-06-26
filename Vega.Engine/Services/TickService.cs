@@ -1,20 +1,103 @@
 ﻿using System.Text.RegularExpressions;
+using GoRogue.Messaging;
 using Microsoft.Extensions.Logging;
+using Vega.Api.Attributes;
+using Vega.Api.Interfaces.Actions;
+using Vega.Engine.Events.Tick;
 using Vega.Engine.Interfaces;
 using Vega.Engine.Services.Base;
 
 namespace Vega.Engine.Services;
 
-public class TickService : BaseVegaService<ITickService>, ITickService
+[VegaService(10)]
+public partial class TickService : BaseVegaService<ITickService>, ITickService, ISubscriber<TickRequestEvent>
 {
-    private static readonly string _pattern = @"(?:(\d+)d\s*)?(?:(\d+)h\s*)?(?:(\d+)m\s*)?(?:(\d+)s)?";
-    private readonly Regex _regex = new(_pattern, RegexOptions.Compiled);
+    public DateTime CurrentDateTime { get; private set; }
+
+    private readonly Dictionary<string, IActionExecutor> _actionExecutors = new();
+    private readonly SortedDictionary<int, List<ICommandAction>> _actionQueue = new();
+
+    public int TotalTicks { get; private set; }
+
+
+    private readonly Regex _regex = TimeSpanParserRegex();
 
     // Execute the regex on the input string
     //Match match = Regex.Match(input, pattern);
 
-    public TickService(ILogger<ITickService> logger) : base(logger)
+    public TickService(ILogger<ITickService> logger, IMessageBusService messageBusService) : base(logger, messageBusService)
     {
+        CurrentDateTime = DateTime.Parse("2028-12-06 04:00:00");
+        TotalTicks = 0;
+        MessageBus.Subscribe(this);
+    }
+
+    public void EnqueueAction(ICommandAction action)
+    {
+        var key = TotalTicks + action.Turns;
+        if (!_actionQueue.ContainsKey(key))
+        {
+            _actionQueue.Add(key, new List<ICommandAction>());
+        }
+
+        _actionQueue[key].Add(action);
+    }
+
+    private void Remove(ICommandAction action)
+    {
+        var actionListFound = new KeyValuePair<int, List<ICommandAction>>(-1, null);
+        foreach (var actionList in _actionQueue)
+        {
+            if (actionList.Value.Contains(action))
+            {
+                actionListFound = actionList;
+                break;
+            }
+        }
+
+        if (actionListFound.Value != null)
+        {
+            actionListFound.Value.Remove(action);
+            if (actionListFound.Value.Count <= 0)
+            {
+                _actionQueue.Remove(actionListFound.Key);
+            }
+        }
+    }
+
+    private ICommandAction NextAction()
+    {
+        var firstActionGroup = _actionQueue.First();
+        var firstAction = firstActionGroup.Value.First();
+        Remove(firstAction);
+        TotalTicks += firstActionGroup.Key;
+        return firstAction;
+    }
+
+    public async Task Tick()
+    {
+        try
+        {
+            var action = NextAction();
+            if (action != null)
+            {
+                var actionExecutor = _actionExecutors[action.Action];
+                await actionExecutor.Execute(action);
+                if (action.TimeExecution != null)
+                {
+                    var timeSpan = ParseTimeSpanFromString(action.TimeExecution);
+                    CurrentDateTime = CurrentDateTime.Add(timeSpan);
+                }
+                else
+                {
+                    CurrentDateTime = CurrentDateTime.AddMinutes(1);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError("Error in TickService.Tick: {Error}", ex.Message);
+        }
     }
 
     /// <summary>
@@ -61,5 +144,13 @@ public class TickService : BaseVegaService<ITickService>, ITickService
         var timeSpan = new TimeSpan(days, hours, minutes, seconds);
 
         return timeSpan;
+    }
+
+    [GeneratedRegex("(?:(\\d+)d\\s*)?(?:(\\d+)h\\s*)?(?:(\\d+)m\\s*)?(?:(\\d+)s)?", RegexOptions.Compiled)]
+    private static partial Regex TimeSpanParserRegex();
+
+    public void Handle(TickRequestEvent message)
+    {
+        _ = Task.Run(Tick);
     }
 }

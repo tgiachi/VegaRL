@@ -11,8 +11,8 @@ public class KeybindingService : BaseDataLoaderVegaService<KeybindingService>, I
     private readonly IServiceProvider _serviceProvider;
 
     public KeybindingService(
-        ILogger<KeybindingService> logger, IDataService dataService, IServiceProvider serviceProvider
-    ) : base(logger, dataService)
+        ILogger<KeybindingService> logger, IDataService dataService, IServiceProvider serviceProvider, IMessageBusService messageBusService
+    ) : base(logger, dataService, messageBusService)
     {
         _serviceProvider = serviceProvider;
     }

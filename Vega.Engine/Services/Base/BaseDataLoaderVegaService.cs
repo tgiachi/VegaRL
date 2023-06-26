@@ -8,7 +8,7 @@ namespace Vega.Engine.Services.Base;
 public abstract class BaseDataLoaderVegaService<TService> :BaseVegaService<TService>
 {
     private readonly IDataService _dataService;
-    public BaseDataLoaderVegaService(ILogger<TService> logger, IDataService dataService) : base(logger)
+    public BaseDataLoaderVegaService(ILogger<TService> logger, IDataService dataService, IMessageBusService messageBusService) : base(logger, messageBusService)
     {
         _dataService = dataService;
     }

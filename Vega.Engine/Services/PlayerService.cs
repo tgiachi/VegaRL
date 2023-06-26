@@ -8,7 +8,10 @@ namespace Vega.Engine.Services;
 [VegaService(10)]
 public class PlayerService : BaseVegaService<PlayerService>, IPlayerService
 {
-    public PlayerService(ILogger<PlayerService> logger) : base(logger)
+    public PlayerService(ILogger<PlayerService> logger, IMessageBusService messageBusService) : base(
+        logger,
+        messageBusService
+    )
     {
     }
 }

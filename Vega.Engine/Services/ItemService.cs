@@ -9,7 +9,7 @@ namespace Vega.Engine.Services;
 [VegaService(5)]
 public class ItemService : BaseDataLoaderVegaService<ItemService>, IItemService
 {
-    public ItemService(ILogger<ItemService> logger, IDataService dataService) : base(logger, dataService)
+    public ItemService(ILogger<ItemService> logger, IDataService dataService, IMessageBusService messageBusService) : base(logger, dataService, messageBusService)
     {
     }
 }

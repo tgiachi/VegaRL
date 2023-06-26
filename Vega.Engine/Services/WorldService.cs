@@ -12,7 +12,7 @@ public class WorldService : BaseVegaService<WorldService>, IWorldService
     public WorldMap CurrentWorldMap { get; set; }
     public GridMap CurrentGridMap { get; set; }
 
-    public WorldService(ILogger<WorldService> logger) : base(logger)
+    public WorldService(ILogger<WorldService> logger, IMessageBusService messageBusService) : base(logger, messageBusService)
     {
     }
 }

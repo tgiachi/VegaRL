@@ -24,9 +24,13 @@ public class TileService : BaseDataLoaderVegaService<TileService>, ITileService
     private readonly Dictionary<string, TerrainEntity> _terrainEntities = new();
 
 
-    public TileService(ILogger<TileService> logger, IDataService dataService, IColorService colorService) : base(
+    public TileService(
+        ILogger<TileService> logger, IDataService dataService, IColorService colorService,
+        IMessageBusService messageBusService
+    ) : base(
         logger,
-        dataService
+        dataService,
+        messageBusService
     )
     {
         _colorService = colorService;

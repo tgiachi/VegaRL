@@ -18,7 +18,7 @@ public partial class TextProducerService : BaseVegaService<TextProducerService>,
     /// </summary>
     private readonly Regex _tokenExtractExpression = TextTokenRegex();
 
-    public TextProducerService(ILogger<TextProducerService> logger) : base(logger)
+    public TextProducerService(ILogger<TextProducerService> logger, IMessageBusService messageBusService) : base(logger, messageBusService)
     {
     }
 }

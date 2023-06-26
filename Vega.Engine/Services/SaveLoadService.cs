@@ -11,7 +11,7 @@ public class SaveLoadService : BaseVegaService<SaveLoadService>, ISaveLoadServic
 {
     private readonly DirectoriesConfig _directoriesConfig;
 
-    public SaveLoadService(ILogger<SaveLoadService> logger, DirectoriesConfig directoriesConfig) : base(logger)
+    public SaveLoadService(ILogger<SaveLoadService> logger, DirectoriesConfig directoriesConfig, IMessageBusService messageBusService) : base(logger, messageBusService)
     {
         _directoriesConfig = directoriesConfig;
     }
