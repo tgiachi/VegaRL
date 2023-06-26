@@ -2,7 +2,7 @@
 using SadRogue.Integration.FieldOfView.Memory;
 using SadRogue.Primitives;
 
-namespace Vega.Api.Map.GameObjects.Terrain;
+namespace Vega.Api.Map.GameObjects.Terrain.Base;
 
 public class BaseTerrainGameObject : MemoryAwareRogueLikeCell
 {
@@ -17,13 +17,13 @@ public class BaseTerrainGameObject : MemoryAwareRogueLikeCell
         Appearance = new TerrainAppearanceDefinition(appearance, MakeColorDark(appearance));
     }
 
-    private ColoredGlyph MakeColorDark(ColoredGlyph coloredGlyph) => new(
+    protected ColoredGlyph MakeColorDark(ColoredGlyph coloredGlyph) => new(
         DarkColor(coloredGlyph.Foreground),
         DarkColor(coloredGlyph.Background),
         coloredGlyph.Glyph
     );
 
-    private static Color DarkColor(Color color, float factor = 0.70f)
+    public static Color DarkColor(Color color, float factor = 0.70f)
     {
         byte r = (byte)(color.R * factor);
         byte g = (byte)(color.G * factor);

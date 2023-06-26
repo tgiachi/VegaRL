@@ -133,8 +133,15 @@ public class VegaEngineManager
         {
             foreach (var serviceInstance in service.Value)
             {
-                Log.Logger.Debug("Loading service {Service}", serviceInstance.GetType().Name);
-                await serviceInstance.LoadAsync();
+                try
+                {
+                    Log.Logger.Debug("Loading service {Service}", serviceInstance.GetType().Name);
+                    await serviceInstance.LoadAsync();
+                }
+                catch (Exception ex)
+                {
+                    Log.Error("Error loading service {Service}: {Message}", serviceInstance.GetType().Name, ex.Message);
+                }
             }
         }
     }

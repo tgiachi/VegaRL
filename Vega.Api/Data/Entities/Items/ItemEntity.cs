@@ -5,8 +5,9 @@ using Vega.Api.Interfaces.Entities;
 namespace Vega.Api.Data.Entities.Items;
 
 [EntityData("item")]
-public class Item : BaseEntity, IHasTile, IHasCategory
+public class ItemEntity : BaseEntity, IHasTile, IHasCategory
 {
+    public string? ItemClassId { get; set; } = null!;
     public string? Sym { get; set; }
     public string? Background { get; set; }
     public string? Foreground { get; set; }
@@ -19,5 +20,5 @@ public class Item : BaseEntity, IHasTile, IHasCategory
 
     public double Weight { get; set; }
 
-    private double Price { get; set; }
+    public double Price { get; set; }
 }

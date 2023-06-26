@@ -12,7 +12,7 @@ public class BaseEntity : IBaseEntity
     public string? Description { get; set; }
     public string? Name { get; set; }
     public string? Comment { get; set; }
-    public List<string>? Flags { get; set; }
+    public List<string>? Flags { get; set; } = new();
 
     public List<string> SearchFlags(params string[] flags)
     {

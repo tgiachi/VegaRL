@@ -12,5 +12,7 @@ public class PropEntity
 
     public PropRangeEntity? Range { get; set; }
 
-    public override string ToString() => $" {Count} [{Range}] {Probability} % ";
+    public string? Dice { get; set; } = null!;
+
+    public override string ToString() => $" {Count} [{Range}] {Probability} % {Dice}";
 }

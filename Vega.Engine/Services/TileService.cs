@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using SadConsole;
 using Vega.Api.Attributes;
 using Vega.Api.Data.Entities.Terrain;
@@ -6,7 +7,10 @@ using Vega.Api.Data.Entities.Tiles;
 using Vega.Api.Interfaces.Entities;
 using Vega.Api.Map.GameObjects;
 using Vega.Api.Map.GameObjects.Terrain;
+using Vega.Api.Map.GameObjects.Terrain.Base;
 using Vega.Api.Utils;
+using Vega.Api.Utils.Random;
+using Vega.Engine.Components.Terrain;
 using Vega.Engine.Interfaces;
 using Vega.Engine.Services.Base;
 
@@ -17,6 +21,8 @@ public class TileService : BaseDataLoaderVegaService<TileService>, ITileService
 {
     public string SelectedTileSetId { get; private set; }
 
+    private readonly IServiceProvider _serviceProvider;
+
     private readonly IColorService _colorService;
     private readonly Dictionary<string, TileSetEntity> _tileSetEntities = new();
     private readonly Dictionary<string, ColoredGlyph> _tileGlyphsCache = new();
@@ -26,7 +32,7 @@ public class TileService : BaseDataLoaderVegaService<TileService>, ITileService
 
     public TileService(
         ILogger<TileService> logger, IDataService dataService, IColorService colorService,
-        IMessageBusService messageBusService
+        IMessageBusService messageBusService, IServiceProvider serviceProvider
     ) : base(
         logger,
         dataService,
@@ -34,6 +40,7 @@ public class TileService : BaseDataLoaderVegaService<TileService>, ITileService
     )
     {
         _colorService = colorService;
+        _serviceProvider = serviceProvider;
     }
 
 
@@ -83,9 +90,17 @@ public class TileService : BaseDataLoaderVegaService<TileService>, ITileService
         return (coloredGlyph, entity.IsTransparent, entity.IsWalkable);
     }
 
-    public BaseTerrainGameObject GetTerrainFromTileId<TTerrain>() where TTerrain : IHasTile, new()
+    public BaseTerrainGameObject GetTerrainFromTileId<TTile>(TTile tile) where TTile : IHasTile, new()
     {
-        return null;
+        var coloredTile = GetTile(tile);
+        var terrainGameObject = new TerrainGameObject(tile.Id, coloredTile.Item1, coloredTile.Item2, coloredTile.Item3);
+
+        //TODO: Add component for dynamic color dark and light
+        terrainGameObject.GoRogueComponents.Add(
+            new TerrainDarkAppearanceComponent(_serviceProvider.GetRequiredService<IWorldService>())
+        );
+
+        return terrainGameObject;
     }
 
     public ColoredGlyph GetGlyphFromHasTileEntity<TEntity>(TEntity entity) where TEntity : IHasTile

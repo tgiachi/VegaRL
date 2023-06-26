@@ -6,6 +6,7 @@ using SadRogue.Primitives;
 using Serilog;
 using Vega.Api.Data.Config;
 using Vega.Api.Utils;
+using Vega.Api.Utils.Random;
 using Vega.Engine;
 using Console = SadConsole.Console;
 
