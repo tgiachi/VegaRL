@@ -11,7 +11,7 @@ using Vega.Engine.Services.Base;
 
 namespace Vega.Engine.Services;
 
-[VegaService(4)]
+[VegaService(5)]
 public class CreatureService : BaseDataLoaderVegaService<CreatureService>, ICreatureService
 {
     private readonly Dictionary<string, CreatureClassEntity> _creatureClassEntities = new();
@@ -39,6 +39,7 @@ public class CreatureService : BaseDataLoaderVegaService<CreatureService>, ICrea
         LoadCreatureGroupsAsync();
         LoadCreaturesAsync();
 
+
         return Task.FromResult(true);
     }
 
@@ -48,17 +49,20 @@ public class CreatureService : BaseDataLoaderVegaService<CreatureService>, ICrea
         {
             // TODO: Add creature equipment and behavior
             var creatureEntity = GetCreature(creatureId);
+
             var creatureGlyph = _tileService.GetTile(creatureEntity);
             var creatureGameObject = new CreatureGameObject(
                 creatureEntity.Id,
                 creatureEntity.Sym,
+                creatureEntity.Name,
+                creatureEntity.Description,
                 creatureGlyph.coloredGlyph,
                 position,
                 false,
                 false
             )
             {
-                Name = _nameService.RandomName(NameTypeEnum.Family, creatureEntity.GenderType)
+                Name = _nameService.RandomName(NameTypeEnum.Given, creatureEntity.GenderType)
             };
             if (creatureEntity.ItemGroupId != null)
             {
@@ -66,12 +70,15 @@ public class CreatureService : BaseDataLoaderVegaService<CreatureService>, ICrea
                 creatureGameObject.GoRogueComponents.Add(new InventoryComponent(itemGroup.ToList()));
             }
 
+            creatureGameObject.Stats = creatureEntity.Stats.BuildRandomCreatureStats();
+
 
             return creatureGameObject;
         }
 
         throw new Exception($"Creature not found with id {creatureId}");
     }
+
 
     public IEnumerable<CreatureEntity> GetCreaturesFromGroup(string creatureGroupId)
     {

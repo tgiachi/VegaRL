@@ -105,6 +105,8 @@ public class FurnitureService : BaseDataLoaderVegaService<FurnitureService>, IFu
             var furnitureGameObject = new FurnitureGameObject(
                 id,
                 furnitureEntity.Sym,
+                furnitureEntity.Name,
+                furnitureEntity.Description,
                 coloredTile.Item1,
                 position,
                 coloredTile.isWalkable,
@@ -135,6 +137,8 @@ public class FurnitureService : BaseDataLoaderVegaService<FurnitureService>, IFu
                 doorGameObject = new DoorFurnitureGameObject(
                     furnitureEntity.Id,
                     furnitureEntity.Sym,
+                    furnitureEntity.Name,
+                    furnitureEntity.Description,
                     doorClosedColoredGlyph.coloredGlyph,
                     position,
                     doorClosedColoredGlyph.isWalkable,
@@ -146,6 +150,8 @@ public class FurnitureService : BaseDataLoaderVegaService<FurnitureService>, IFu
                 doorGameObject = new DoorFurnitureGameObject(
                     furnitureEntity.Id,
                     furnitureEntity.Sym,
+                    furnitureEntity.Name,
+                    furnitureEntity.Description,
                     doorOpenedGlyph.coloredGlyph,
                     position,
                     doorOpenedGlyph.isWalkable,

@@ -1,4 +1,5 @@
-﻿using SadRogue.Primitives;
+﻿using System.Collections;
+using SadRogue.Primitives;
 using Vega.Api.Data.Entities.Items;
 using Vega.Api.Map.GameObjects.Items;
 using Vega.Engine.Interfaces.Services;
@@ -11,4 +12,5 @@ public interface IItemService : IVegaService
     IEnumerable<ItemEntity> GetItemsFromDrop(List<ItemDropEntity> itemDrops);
     IEnumerable<ItemEntity> GetItemsFromItemGroupId(string itemGroupId);
     ItemEntity GetItem(string itemId);
+    IEnumerable<ItemEntity> FindItemsByCategory(string category, string? subCategory = null);
 }

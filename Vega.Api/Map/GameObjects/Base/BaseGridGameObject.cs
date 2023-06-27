@@ -8,6 +8,8 @@ public class BaseGridGameObject : RogueLikeEntity
 {
     public string ObjectId { get; set; }
     public string Symbol { get; set; }
+    public string Name { get; set; }
+    public string Description { get; set; }
 
     public bool IsAnimated { get; set; } = false;
 
@@ -19,7 +21,7 @@ public class BaseGridGameObject : RogueLikeEntity
     private TimeSpan _animationTimer = TimeSpan.Zero;
 
     public BaseGridGameObject(
-        string objectId, string symbol, ColoredGlyph appearance,
+        string objectId, string symbol, string name, string description, ColoredGlyph appearance,
         Point position, int layer, bool isWalkable, bool isTransparent
     ) : base(position, appearance, isWalkable, isTransparent, layer)
     {

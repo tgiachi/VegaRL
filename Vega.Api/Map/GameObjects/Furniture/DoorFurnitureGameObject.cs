@@ -11,8 +11,9 @@ public class DoorFurnitureGameObject : FurnitureGameObject
 
 
     public DoorFurnitureGameObject(
-        string objectId, string symbol, ColoredGlyph appearance, Point position, bool isWalkable, bool isTransparent
-    ) : base(objectId, symbol, appearance, position, isWalkable, isTransparent)
+        string objectId, string symbol, string name, string description, ColoredGlyph appearance, Point position,
+        bool isWalkable, bool isTransparent
+    ) : base(objectId, symbol, name, description, appearance, position, isWalkable, isTransparent)
     {
     }
 

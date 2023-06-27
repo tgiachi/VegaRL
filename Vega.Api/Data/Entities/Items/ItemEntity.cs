@@ -17,4 +17,9 @@ public class ItemEntity : BaseEntity, IHasTile, IHasCategory
     public string? SubCategory { get; set; }
     public double Weight { get; set; }
     public double Price { get; set; }
+
+    public ItemEquipLocationType EquipLocation { get; set; }
+
+    public override string ToString() =>
+        $" {Name} ({Id})  {Sym}  {Background}  {Foreground}  {IsWalkable}  {IsTransparent}  {Category}  {SubCategory}  {Weight}  {Price}  {EquipLocation}  {Comment}  {Flags} ";
 }

@@ -2,7 +2,7 @@
 
 namespace Vega.Api.Data.Entities.Stats;
 
-public interface IHaveStat
+public interface  IHaveStat
 {
     [JsonPropertyName("hp")] int Health { get; set; }
     [JsonPropertyName("hp_max")] int MaxHealth { get; set; }

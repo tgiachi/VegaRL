@@ -10,7 +10,7 @@ using Vega.Engine.Services.Base;
 
 namespace Vega.Engine.Services;
 
-[VegaService(5)]
+[VegaService(4)]
 public class ItemService : BaseDataLoaderVegaService<ItemService>, IItemService
 {
     private readonly Dictionary<string, ItemClassEntity> _itemClasses = new();
@@ -44,6 +44,8 @@ public class ItemService : BaseDataLoaderVegaService<ItemService>, IItemService
             return new ItemGameObject(
                 itemEntity.Id,
                 itemEntity.Sym,
+                itemEntity.Name,
+                itemEntity.Description,
                 colorAppearance.Item1,
                 position,
                 colorAppearance.isWalkable,
@@ -74,6 +76,14 @@ public class ItemService : BaseDataLoaderVegaService<ItemService>, IItemService
 
     public ItemEntity GetItem(string itemId) => GetItemWithClass(itemId);
 
+    public IEnumerable<ItemEntity> FindItemsByCategory(string category, string? subCategory = null)
+    {
+        return _items.Values.Where(
+                item => item.Category.ToLower() == category.ToLower() &&
+                        (subCategory == null || item.SubCategory.ToLower() == subCategory.ToLower())
+            )
+            .ToList();
+    }
 
     private Task LoadItemClasses()
     {
