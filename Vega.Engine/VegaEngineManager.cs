@@ -7,6 +7,7 @@ using Vega.Engine.Interfaces.Services;
 using Vega.Framework.Attributes;
 using Vega.Framework.Data.Config;
 using Vega.Framework.Data.Directories;
+using Vega.Framework.Data.Events;
 using Vega.Framework.Interfaces.DependencyInjection;
 using Vega.Framework.Utils;
 
@@ -48,6 +49,11 @@ public class VegaEngineManager
                 Log.Error("Error loading module {Module}: {Message}", module.Name, ex.Message);
             }
         }
+    }
+
+    public void PublishEvent<TEvent>(TEvent @event) where TEvent : BaseEvent
+    {
+        Resolve<IMessageBusService>().Send(@event);
     }
 
     public TService Resolve<TService>() => _serviceProvider.GetRequiredService<TService>();

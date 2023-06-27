@@ -15,7 +15,7 @@ public partial class TextProducerService : BaseDataLoaderVegaService<TextProduce
     [GeneratedRegex("\\$\\{(.*?)\\}", RegexOptions.Compiled)]
     private static partial Regex TextProducerTokenRegex();
 
-    private Dictionary<string, (object, MethodInfo)> _textProducers = new();
+    private readonly Dictionary<string, (object, MethodInfo)> _textProducers = new();
 
     private readonly Dictionary<string, string> _texts = new();
     private readonly IServiceProvider _serviceProvider;
@@ -86,7 +86,7 @@ public partial class TextProducerService : BaseDataLoaderVegaService<TextProduce
             return GetText(text);
         }
 
-        throw new Exception($" Text with id '{templateName}' not found");
+        throw new Exception($"Text with id '{templateName}' not found");
     }
 
     public string GetText(string text)

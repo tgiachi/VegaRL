@@ -59,6 +59,7 @@ VegaRl is released under the [MIT License](LICENSE).
 
 VegaRl is developed by [squid](https://github.com/tgiachi). We would like to thank the open-source community for their valuable contributions and the following individuals for their
 
+For a detailed list of changes and updates, please refer to the [Changelog](CHANGELOG.md).
 ## Acknowledgments
 
 We would like to express our gratitude to the following individuals for their invaluable contributions, feedback, and support (in no particular order):
