@@ -9,6 +9,7 @@ namespace Vega.Engine.Interfaces;
 public interface IItemService : IVegaService
 {
     ItemGameObject CreateItemGameObject(string itemId, Point position);
+    IEnumerable<ItemGameObject> CreateItemGameObjects(IEnumerable<ItemEntity> items);
     IEnumerable<ItemEntity> GetItemsFromDrop(List<ItemDropEntity> itemDrops);
     IEnumerable<ItemEntity> GetItemsFromItemGroupId(string itemGroupId);
     ItemEntity GetItem(string itemId);

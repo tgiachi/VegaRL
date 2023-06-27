@@ -7,6 +7,7 @@ using Serilog;
 using Vega.Engine;
 using Vega.Framework.Data.Config;
 using Vega.Framework.Utils.Random;
+using Vega.Gui.Sinks;
 using Console = SadConsole.Console;
 
 namespace Vega.Gui;
@@ -23,7 +24,7 @@ class Program
             )
         };
         InstancesHolder.Manager = new VegaEngineManager(
-            new LoggerConfiguration(),
+            new LoggerConfiguration().WriteTo.LogConsoleSink(),
             options
         );
         await InstancesHolder.Manager.Initialize();

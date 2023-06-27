@@ -67,7 +67,9 @@ public class CreatureService : BaseDataLoaderVegaService<CreatureService>, ICrea
             if (creatureEntity.ItemGroupId != null)
             {
                 var itemGroup = _itemService.GetItemsFromItemGroupId(creatureEntity.ItemGroupId);
-                creatureGameObject.GoRogueComponents.Add(new InventoryComponent(itemGroup.ToList()));
+                creatureGameObject.GoRogueComponents.Add(
+                    new InventoryComponent(_itemService.CreateItemGameObjects(itemGroup.ToList()).ToList())
+                );
             }
 
             creatureGameObject.Stats = creatureEntity.Stats.BuildRandomCreatureStats();

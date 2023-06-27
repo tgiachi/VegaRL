@@ -56,6 +56,8 @@ public class ItemService : BaseDataLoaderVegaService<ItemService>, IItemService
         throw new Exception($" Item with id {itemId} not found.");
     }
 
+    public IEnumerable<ItemGameObject> CreateItemGameObjects(IEnumerable<ItemEntity> items) => items.Select(item => CreateItemGameObject(item.Id, Point.None));
+
     public IEnumerable<ItemEntity> GetItemsFromDrop(List<ItemDropEntity> itemDrops)
     {
         var resultBag = new List<ItemEntity>();
