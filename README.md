@@ -63,6 +63,6 @@ VegaRl is developed by [squid](https://github.com/tgiachi). We would like to tha
 
 We would like to express our gratitude to the following individuals for their invaluable contributions, feedback, and support (in no particular order):
 
-- Venomaus [github](https://github.com/VeNoMouS)
+- Venomaus [github](https://github.com/Ven0maus)
 - Chris3606 [github](https://github.com/Chris3606)
 - Thraka [github](https://github.com/Thraka)
