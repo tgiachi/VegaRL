@@ -1,4 +1,4 @@
-﻿using Vega.Api.Data.Events;
+﻿using Vega.Framework.Data.Events;
 
 namespace Vega.Engine.Events.Engine;
 

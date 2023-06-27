@@ -1,10 +1,10 @@
 ﻿using Microsoft.Extensions.Logging;
 using SadRogue.Primitives;
-using Vega.Api.Attributes;
-using Vega.Api.Data.Config;
-using Vega.Api.Data.Entities.ColorSchema;
 using Vega.Engine.Interfaces;
 using Vega.Engine.Services.Base;
+using Vega.Framework.Attributes;
+using Vega.Framework.Data.Config;
+using Vega.Framework.Data.Entities.ColorSchema;
 
 namespace Vega.Engine.Services;
 

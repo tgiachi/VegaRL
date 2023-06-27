@@ -4,10 +4,11 @@
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <Version>0.0.1</Version>
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Vega.Api\Vega.Api.csproj" />
+      <ProjectReference Include="..\Vega.Framework\Vega.Framework.csproj" />
     </ItemGroup>
 
     <ItemGroup>

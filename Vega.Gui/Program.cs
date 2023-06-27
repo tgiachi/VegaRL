@@ -4,10 +4,9 @@ using System.Threading.Tasks;
 using SadConsole;
 using SadRogue.Primitives;
 using Serilog;
-using Vega.Api.Data.Config;
-using Vega.Api.Utils;
-using Vega.Api.Utils.Random;
 using Vega.Engine;
+using Vega.Framework.Data.Config;
+using Vega.Framework.Utils.Random;
 using Console = SadConsole.Console;
 
 namespace Vega.Gui;

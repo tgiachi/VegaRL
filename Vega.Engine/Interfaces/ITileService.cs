@@ -1,9 +1,8 @@
 ﻿using SadConsole;
-using Vega.Api.Interfaces.Entities;
-using Vega.Api.Map.GameObjects.Terrain;
-using Vega.Api.Map.GameObjects.Terrain.Base;
-using Vega.Api.Map.GameObjects.Vegetation;
 using Vega.Engine.Interfaces.Services;
+using Vega.Framework.Interfaces.Entities;
+using Vega.Framework.Map.GameObjects.Terrain;
+using Vega.Framework.Map.GameObjects.Vegetation;
 
 namespace Vega.Engine.Interfaces;
 

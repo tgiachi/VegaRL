@@ -1,5 +1,5 @@
-﻿using Vega.Api.Interfaces.Actions;
-using Vega.Engine.Interfaces.Services;
+﻿using Vega.Engine.Interfaces.Services;
+using Vega.Framework.Interfaces.Actions;
 
 namespace Vega.Engine.Interfaces;
 

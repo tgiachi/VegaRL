@@ -1,12 +1,12 @@
 ﻿using GoRogue.DiceNotation;
 using Microsoft.Extensions.Logging;
 using SadRogue.Primitives;
-using Vega.Api.Attributes;
-using Vega.Api.Data.Entities.Items;
-using Vega.Api.Map.GameObjects.Items;
-using Vega.Api.Utils.Random;
 using Vega.Engine.Interfaces;
 using Vega.Engine.Services.Base;
+using Vega.Framework.Attributes;
+using Vega.Framework.Data.Entities.Items;
+using Vega.Framework.Map.GameObjects.Items;
+using Vega.Framework.Utils.Random;
 
 namespace Vega.Engine.Services;
 

@@ -1,4 +1,4 @@
-﻿using Vega.Api.Data.Serializer;
+﻿using Vega.Framework.Data.Serializer;
 
 namespace Vega.Engine.Interfaces.Services;
 

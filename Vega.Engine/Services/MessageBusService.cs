@@ -1,8 +1,8 @@
 ﻿using GoRogue.Messaging;
 using Microsoft.Extensions.Logging;
-using Vega.Api.Attributes;
-using Vega.Api.Data.Events;
 using Vega.Engine.Interfaces;
+using Vega.Framework.Attributes;
+using Vega.Framework.Data.Events;
 
 
 namespace Vega.Engine.Services;

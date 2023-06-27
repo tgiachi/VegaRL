@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
-using Vega.Api.Attributes;
-using Vega.Api.Data.Entities.Names;
-using Vega.Api.Utils.Random;
 using Vega.Engine.Interfaces;
 using Vega.Engine.Services.Base;
+using Vega.Framework.Attributes;
+using Vega.Framework.Data.Entities.Names;
+using Vega.Framework.Utils.Random;
 
 namespace Vega.Engine.Services;
 

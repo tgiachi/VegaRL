@@ -1,8 +1,8 @@
-﻿using DaysOfDarkness.Engine.Data.Directories;
-using Microsoft.Extensions.Logging;
-using Vega.Api.Attributes;
+﻿using Microsoft.Extensions.Logging;
 using Vega.Engine.Interfaces;
 using Vega.Engine.Services.Base;
+using Vega.Framework.Attributes;
+using Vega.Framework.Data.Directories;
 
 namespace Vega.Engine.Services;
 

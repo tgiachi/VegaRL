@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
-using Vega.Api.Data.Entities.Base;
-using Vega.Api.Interfaces.Entities.Base;
 using Vega.Engine.Interfaces;
+using Vega.Framework.Interfaces.Entities.Base;
 
 namespace Vega.Engine.Services.Base;
 

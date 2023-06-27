@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Serilog;
-using Vega.Api.Attributes;
-using Vega.Api.Interfaces.DependencyInjection;
+using Vega.Framework.Attributes;
+using Vega.Framework.Interfaces.DependencyInjection;
 
 namespace Vega.Gui.Modules;
 

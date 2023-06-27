@@ -1,8 +1,8 @@
 ﻿using System.Collections;
 using SadRogue.Primitives;
-using Vega.Api.Data.Entities.Furniture;
-using Vega.Api.Map.GameObjects.Furniture;
 using Vega.Engine.Interfaces.Services;
+using Vega.Framework.Data.Entities.Furniture;
+using Vega.Framework.Map.GameObjects.Furniture;
 
 namespace Vega.Engine.Interfaces;
 

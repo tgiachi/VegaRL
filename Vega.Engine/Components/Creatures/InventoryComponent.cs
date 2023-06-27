@@ -1,6 +1,6 @@
 ﻿using SadRogue.Integration.Components;
-using Vega.Api.Data.Entities.Items;
-using Vega.Api.Map.GameObjects.Creatures;
+using Vega.Framework.Data.Entities.Items;
+using Vega.Framework.Map.GameObjects.Creatures;
 
 namespace Vega.Engine.Components.Creatures;
 

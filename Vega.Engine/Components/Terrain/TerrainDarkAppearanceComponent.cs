@@ -1,7 +1,7 @@
 ﻿using SadConsole;
 using SadRogue.Integration.Components;
-using Vega.Api.Map.GameObjects.Terrain;
 using Vega.Engine.Interfaces;
+using Vega.Framework.Map.GameObjects.Terrain;
 
 namespace Vega.Engine.Components.Terrain;
 

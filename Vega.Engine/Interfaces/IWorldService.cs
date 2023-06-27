@@ -1,5 +1,5 @@
-﻿using Vega.Api.Map;
-using Vega.Engine.Interfaces.Services;
+﻿using Vega.Engine.Interfaces.Services;
+using Vega.Framework.Map;
 
 namespace Vega.Engine.Interfaces;
 

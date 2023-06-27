@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Vega.Api.Attributes;
-using Vega.Api.Interfaces.DependencyInjection;
-using Vega.Api.Utils;
+using Vega.Framework.Attributes;
+using Vega.Framework.Interfaces.DependencyInjection;
+using Vega.Framework.Utils;
 
 namespace Vega.Engine.Modules;
 

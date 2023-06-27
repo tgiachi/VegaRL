@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
-using Vega.Api.Attributes;
-using Vega.Api.Data.Entities.Items;
-using Vega.Api.Data.Entities.Player;
 using Vega.Engine.Interfaces;
 using Vega.Engine.Services.Base;
+using Vega.Framework.Attributes;
+using Vega.Framework.Data.Entities.Items;
+using Vega.Framework.Data.Entities.Player;
 
 namespace Vega.Engine.Services;
 

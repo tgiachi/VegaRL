@@ -1,11 +1,11 @@
 ﻿using System.Text.RegularExpressions;
 using GoRogue.Messaging;
 using Microsoft.Extensions.Logging;
-using Vega.Api.Attributes;
-using Vega.Api.Interfaces.Actions;
 using Vega.Engine.Events.Tick;
 using Vega.Engine.Interfaces;
 using Vega.Engine.Services.Base;
+using Vega.Framework.Attributes;
+using Vega.Framework.Interfaces.Actions;
 
 namespace Vega.Engine.Services;
 

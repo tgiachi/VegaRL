@@ -1,6 +1,6 @@
 ﻿using SadRogue.Primitives;
-using Vega.Api.Map.GameObjects.Creatures;
 using Vega.Engine.Interfaces.Services;
+using Vega.Framework.Map.GameObjects.Creatures;
 
 namespace Vega.Engine.Interfaces;
 

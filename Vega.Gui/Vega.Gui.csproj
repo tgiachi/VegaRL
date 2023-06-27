@@ -4,6 +4,7 @@
         <OutputType>WinExe</OutputType>
         <TargetFramework>net7.0</TargetFramework>
         <RootNamespace>Vega.Gui</RootNamespace>
+        <Version>0.0.1</Version>
     </PropertyGroup>
 
     <ItemGroup>
@@ -15,7 +16,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Vega.Api\Vega.Api.csproj" />
+      <ProjectReference Include="..\Vega.Framework\Vega.Framework.csproj" />
       <ProjectReference Include="..\Vega.Engine\Vega.Engine.csproj" />
     </ItemGroup>
     

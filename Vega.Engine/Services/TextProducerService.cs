@@ -1,11 +1,11 @@
 ﻿using System.Reflection;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging;
-using Vega.Api.Attributes;
-using Vega.Api.Data.Entities.Text;
-using Vega.Api.Utils;
 using Vega.Engine.Interfaces;
 using Vega.Engine.Services.Base;
+using Vega.Framework.Attributes;
+using Vega.Framework.Data.Entities.Text;
+using Vega.Framework.Utils;
 
 namespace Vega.Engine.Services;
 

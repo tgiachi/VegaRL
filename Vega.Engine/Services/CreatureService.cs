@@ -1,13 +1,13 @@
 ﻿using Microsoft.Extensions.Logging;
 using SadRogue.Primitives;
-using Vega.Api.Attributes;
-using Vega.Api.Data.Entities.Creatures;
-using Vega.Api.Data.Entities.Names;
-using Vega.Api.Map.GameObjects.Creatures;
-using Vega.Api.Utils.Random;
 using Vega.Engine.Components.Creatures;
 using Vega.Engine.Interfaces;
 using Vega.Engine.Services.Base;
+using Vega.Framework.Attributes;
+using Vega.Framework.Data.Entities.Creatures;
+using Vega.Framework.Data.Entities.Names;
+using Vega.Framework.Map.GameObjects.Creatures;
+using Vega.Framework.Utils.Random;
 
 namespace Vega.Engine.Services;
 

@@ -1,5 +1,5 @@
-﻿using Vega.Api.Data;
-using Vega.Api.Data.Entities.Base;
+﻿using Vega.Framework.Data;
+using Vega.Framework.Data.Entities.Base;
 
 namespace Vega.Engine.Interfaces.Services;
 

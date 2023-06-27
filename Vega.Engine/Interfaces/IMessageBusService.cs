@@ -1,6 +1,6 @@
 ﻿using GoRogue.Messaging;
-using Vega.Api.Data.Events;
 using Vega.Engine.Interfaces.Services;
+using Vega.Framework.Data.Events;
 
 namespace Vega.Engine.Interfaces;
 
