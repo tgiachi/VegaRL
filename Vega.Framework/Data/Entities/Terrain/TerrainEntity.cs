@@ -18,4 +18,14 @@ public class TerrainEntity : BaseEntity, IHasTile
     public bool IsBreakable { get; set; }
 
     public TerrainSmashEntity Smash { get; set; } = new();
+
+    public void SanitizeWorldFlags()
+    {
+        if (HasFlag("WORLDMAP"))
+        {
+            Flags?.Remove("WORLDMAP");
+        }
+
+        Flags.RemoveAll(e => e.StartsWith("VAL="));
+    }
 }
