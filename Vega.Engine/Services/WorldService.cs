@@ -1,6 +1,8 @@
-﻿using GoRogue.Random;
+﻿using System.Collections;
+using GoRogue.Random;
 using Microsoft.Extensions.Logging;
 using SadRogue.Primitives;
+using SadRogue.Primitives.GridViews;
 using Vega.Engine.Interfaces;
 using Vega.Engine.Services.Base;
 using Vega.Framework.Attributes;
@@ -10,6 +12,8 @@ using Vega.Framework.Data.Entities.Terrain;
 using Vega.Framework.Map;
 using Vega.Framework.Map.GameObjects.World;
 using Vega.Framework.Noise;
+using Vega.Framework.Utils;
+using Vega.Framework.Utils.Random;
 
 namespace Vega.Engine.Services;
 
@@ -68,6 +72,8 @@ public class WorldService : BaseVegaService<WorldService>, IWorldService
 
         await FillOverMapAsync(worldMap, mappedValues, values);
 
+        var zones = FindZones(worldMap);
+
 
         return worldMap;
     }
@@ -109,7 +115,7 @@ public class WorldService : BaseVegaService<WorldService>, IWorldService
         Logger.LogInformation("Fast noise map generated");
         var noise = new FastNoiseLite(GlobalRandom.DefaultRNG.NextInt(1, Int32.MaxValue));
         noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
-        
+
         var overMapResults = new float[WorldMapSize.X, WorldMapSize.Y];
 
         for (var i = 0; i < WorldMapSize.X; i++)
@@ -139,6 +145,26 @@ public class WorldService : BaseVegaService<WorldService>, IWorldService
         terrains.Values.ToList().ForEach(s => s.SanitizeWorldFlags());
 
         return Task.FromResult(terrains);
+    }
+
+    public IEnumerable<Zone> FindZones(WorldMap map, int count = 5, int radius = 6)
+    {
+        var zoneFinder = new ZoneFinder(map);
+        var zones = new List<Zone>();
+        foreach (var _ in Enumerable.Range(0, count))
+        {
+            Zone zone = null;
+
+            while (zone == null)
+            {
+                zone = zoneFinder.FindZone(map.WalkabilityView.Positions().RandomElement(), radius);
+            }
+
+
+            zones.Add(zone);
+        }
+
+        return zones;
     }
 
     private async Task FillOverMapAsync(WorldMap overMap, SortedDictionary<double, TerrainEntity> perlinLimits, float[,] map)
