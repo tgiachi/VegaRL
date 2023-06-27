@@ -53,6 +53,10 @@ public class VegaEngineManager
 
     public void PublishEvent<TEvent>(TEvent @event) where TEvent : BaseEvent
     {
+        if (_serviceProvider == null)
+        {
+            return;
+        }
         Resolve<IMessageBusService>().Send(@event);
     }
 
@@ -168,4 +172,6 @@ public class VegaEngineManager
             }
         }
     }
+
+    public string GetAssemblyVersion() => Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "";
 }

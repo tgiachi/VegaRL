@@ -11,6 +11,7 @@ using Vega.Framework.Data.Entities.Vegetation;
 using Vega.Framework.Interfaces.Entities;
 using Vega.Framework.Map.GameObjects.Terrain;
 using Vega.Framework.Map.GameObjects.Vegetation;
+using Vega.Framework.Utils;
 using Vega.Framework.Utils.Random;
 
 namespace Vega.Engine.Services;
@@ -201,6 +202,8 @@ public class TileService : BaseDataLoaderVegaService<TileService>, ITileService
 
         throw new Exception("No tileId or sym found");
     }
+
+    public IEnumerable<TerrainEntity> FindTerrainByFlags(params string[] flags) => _terrainEntities.Values.FindByFlags(flags);
 
     private static int GetGlyphFromTileSet(string glyph)
     {

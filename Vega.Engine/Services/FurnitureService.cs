@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using SadRogue.Primitives;
+using Vega.Engine.Components.Creatures;
 using Vega.Engine.Interfaces;
 using Vega.Engine.Services.Base;
 using Vega.Framework.Attributes;
@@ -115,7 +116,11 @@ public class FurnitureService : BaseDataLoaderVegaService<FurnitureService>, IFu
             {
                 var items = furnitureEntity.Container.BuildPropEntries();
 
-                furnitureGameObject.ContainerItems.AddRange(items.Select(s => _itemService.GetItem(s)));
+                furnitureGameObject.GoRogueComponents.Add(
+                    new InventoryComponent(
+                        _itemService.CreateItemGameObjects(items.Select(s => _itemService.GetItem(s)).ToList()).ToList()
+                    )
+                );
             }
 
             return furnitureGameObject;
@@ -205,7 +210,7 @@ public class FurnitureService : BaseDataLoaderVegaService<FurnitureService>, IFu
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, $"Error loading furniture group {furnitureGroup.Id}: Error: {ex.Message}");
+                Logger.LogError(ex, "Error loading furniture group {FurnitureGroupId}: Error: {ExMessage}", furnitureGroup.Id, ex.Message);
             }
             finally
             {

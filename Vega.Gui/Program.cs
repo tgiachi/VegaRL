@@ -16,30 +16,26 @@ class Program
 {
     private static async Task Main(string[] args)
     {
-        var options = new VegaEngineOption()
-        {
-            RootDirectory = Path.Join(
-                Environment.GetEnvironmentVariable("VEGARL_DATA_DIR") ??
-                Path.Join(Directory.GetCurrentDirectory(), "vega")
-            )
-        };
+        var options = ConfigService.Instance.Initialize(args);
+
         InstancesHolder.Manager = new VegaEngineManager(
             new LoggerConfiguration().WriteTo.LogConsoleSink(),
             options
         );
         await InstancesHolder.Manager.Initialize();
 
-        var SCREEN_WIDTH = 80 * 2;
-        var SCREEN_HEIGHT = 25 * 2;
+        Settings.WindowTitle = $"VegaRL : Days of Darkness - v{InstancesHolder.Manager.GetAssemblyVersion()}";
+        Settings.UseDefaultExtendedFont = true;
 
-        SadConsole.Settings.WindowTitle = "SadConsole Game";
-        SadConsole.Settings.UseDefaultExtendedFont = true;
+        Game.Create(
+            options.Ui.ScreenWidth * options.Ui.ScaleFactor,
+            options.Ui.ScreenHeight * options.Ui.ScaleFactor,
+            options.Ui.DefaultUiFont
+        );
 
-        SadConsole.Game.Create(SCREEN_WIDTH, SCREEN_HEIGHT, options.Ui.DefaultUiFont);
-
-        SadConsole.Game.Instance.OnStart = Init;
-        SadConsole.Game.Instance.Run();
-        SadConsole.Game.Instance.Dispose();
+        Game.Instance.OnStart = Init;
+        Game.Instance.Run();
+        Game.Instance.Dispose();
     }
 
     private static void Init()

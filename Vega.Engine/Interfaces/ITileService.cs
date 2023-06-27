@@ -1,5 +1,6 @@
 ﻿using SadConsole;
 using Vega.Engine.Interfaces.Services;
+using Vega.Framework.Data.Entities.Terrain;
 using Vega.Framework.Interfaces.Entities;
 using Vega.Framework.Map.GameObjects.Terrain;
 using Vega.Framework.Map.GameObjects.Vegetation;
@@ -18,4 +19,6 @@ public interface ITileService : IVegaService, IVegaReloadableService
     VegetationGameObject CreateVegetationFromTileId(string vegetationId);
 
     ColoredGlyph GetGlyphFromHasTileEntity<TEntity>(TEntity entity) where TEntity : IHasTile;
+
+    IEnumerable<TerrainEntity> FindTerrainByFlags(params string[] flags);
 }

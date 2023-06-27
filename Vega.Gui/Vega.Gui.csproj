@@ -5,8 +5,7 @@
         <TargetFramework>net7.0</TargetFramework>
         <RootNamespace>Vega.Gui</RootNamespace>
         <Version>0.0.1</Version>
-        <PublishSingleFile>true</PublishSingleFile>
-        <SelfContained>true</SelfContained>
+     
     </PropertyGroup>
 
     <ItemGroup>
