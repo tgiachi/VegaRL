@@ -4,8 +4,8 @@ namespace Vega.Framework.Map.WorldMap;
 
 public class WorldMap : RogueLikeMap
 {
-
     public string Name { get; set; }
+
     public WorldMap(
         int width, int height
     ) : base(
