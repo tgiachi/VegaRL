@@ -6,7 +6,7 @@ public class WorldMapConfig
 {
     public PropEntity NumCities { get; set; } = new () {Range = new(1, 3)};
 
-    public WorldMapNoiseType NoiseType { get; set; } = WorldMapNoiseType.Perlin;
+    public WorldMapNoiseType NoiseType { get; set; } = WorldMapNoiseType.AccidentalNoise;
 }
 
 

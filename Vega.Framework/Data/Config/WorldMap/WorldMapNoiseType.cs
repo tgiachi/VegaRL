@@ -4,4 +4,5 @@ public enum WorldMapNoiseType
 {
     Perlin,
     FastPerlin,
+    AccidentalNoise
 }

@@ -6,7 +6,7 @@ public class PerlinNoise
 
     public PerlinNoise(Random rng)
     {
-        byte[] bytes = new byte[256];
+        var bytes = new byte[256];
         rng.NextBytes(bytes);
 
         p = new List<byte>(256 * 2);
@@ -17,9 +17,9 @@ public class PerlinNoise
     public double Noise(double x, double y, double z)
     {
         // Find the unit cube that contains the point
-        int X = (int)Math.Floor(x) & 255;
-        int Y = (int)Math.Floor(y) & 255;
-        int Z = (int)Math.Floor(z) & 255;
+        var X = (int)Math.Floor(x) & 255;
+        var Y = (int)Math.Floor(y) & 255;
+        var Z = (int)Math.Floor(z) & 255;
 
         // Find relative x, y,z of point in cube
         x -= Math.Floor(x);
@@ -27,20 +27,20 @@ public class PerlinNoise
         z -= Math.Floor(z);
 
         // Compute fade curves for each of x, y, z
-        double u = Fade(x);
-        double v = Fade(y);
-        double w = Fade(z);
+        var u = Fade(x);
+        var v = Fade(y);
+        var w = Fade(z);
 
         // Hash coordinates of the 8 cube corners
-        int A = p[X] + Y;
-        int AA = p[A] + Z;
-        int AB = p[A + 1] + Z;
-        int B = p[X + 1] + Y;
-        int BA = p[B] + Z;
-        int BB = p[B + 1] + Z;
+        var A = p[X] + Y;
+        var AA = p[A] + Z;
+        var AB = p[A + 1] + Z;
+        var B = p[X + 1] + Y;
+        var BA = p[B] + Z;
+        var BB = p[B + 1] + Z;
 
         // Add blended results from 8 corners of cube
-        double res = Lerp(
+        var res = Lerp(
             w,
             Lerp(
                 v,
@@ -62,7 +62,7 @@ public class PerlinNoise
 
     private static double Grad(int hash, double x, double y, double z)
     {
-        int h = hash & 15;
+        var h = hash & 15;
 
         // Convert lower 4 bits of hash inot 12 gradient directions
         double u = h < 8 ? x : y,
