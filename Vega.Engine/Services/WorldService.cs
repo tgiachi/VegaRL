@@ -24,6 +24,8 @@ using Vega.Framework.Utils.Random;
 
 namespace Vega.Engine.Services;
 
+using TerrainZonesDict = Dictionary<string, List<TerrainGroupObject>>;
+
 [VegaService(10)]
 public class WorldService : BaseVegaService<WorldService>, IWorldService
 {
@@ -71,7 +73,7 @@ public class WorldService : BaseVegaService<WorldService>, IWorldService
     }
 
 
-    private async Task<(WorldMap, Dictionary<string, List<TerrainGroupObject>>)> GenerateNoiseMap(
+    private async Task<(WorldMap, TerrainZonesDict)> GenerateNoiseMap(
         WorldMap worldMap, WorldMapConfig config
     )
     {
@@ -85,7 +87,7 @@ public class WorldService : BaseVegaService<WorldService>, IWorldService
         await UpdateNeighbors(worldMap);
         await UpdateBitmasks(worldMap);
         var floodFill = await FloodFill(worldMap);
-        var zonesData = new Dictionary<string, List<TerrainGroupObject>>();
+        var zonesData = new TerrainZonesDict();
         foreach (var flood in floodFill)
         {
             if (!zonesData.ContainsKey(flood.TileType))
