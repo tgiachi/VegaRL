@@ -1,7 +1,9 @@
 ﻿using System.Collections;
+using System.Diagnostics;
 using System.Numerics;
 using GoRogue.GameFramework;
 using GoRogue.Random;
+using Humanizer;
 using Microsoft.Extensions.Logging;
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
@@ -56,6 +58,7 @@ public class WorldService : BaseVegaService<WorldService>, IWorldService
 
     public async Task<WorldMap> GenerateWorldMapAsync(WorldMapConfig config)
     {
+        var stopwatch = Stopwatch.StartNew();
         Logger.LogInformation("Generating world map...");
         var worldMap = new WorldMap(WorldMapSize.X, WorldMapSize.Y)
         {
@@ -65,7 +68,8 @@ public class WorldService : BaseVegaService<WorldService>, IWorldService
         await PlaceRivers(worldMap, config);
         await PlaceCities(worldMap, config);
 
-        Logger.LogInformation("World map generated");
+        stopwatch.Stop();
+        Logger.LogInformation("World map generated in {Ms} ms", stopwatch.ElapsedMilliseconds);
         return worldMap;
     }
 
@@ -105,7 +109,7 @@ public class WorldService : BaseVegaService<WorldService>, IWorldService
         return worldMap;
     }
 
-    private Task GenerateBiomeMap(WorldMap map)
+    private static Task GenerateBiomeMap(WorldMap map)
     {
         for (var x = 0; x < map.Width; x++)
         {
