@@ -8,33 +8,33 @@ public class HeatMapUtils
     private static readonly float WarmValue = 0.6f;
     private static readonly float WarmerValue = 0.8f;
 
-    public static HeatMapType ValueToHeat(float heatValue)
+    public static HeatType ValueToHeat(float heatValue)
     {
         if (heatValue < ColdestValue)
         {
-            return HeatMapType.Coldest;
+            return HeatType.Coldest;
         }
 
         if (heatValue < ColderValue)
         {
-            return HeatMapType.Colder;
+            return HeatType.Colder;
         }
 
         if (heatValue < ColdValue)
         {
-            return HeatMapType.Cold;
+            return HeatType.Cold;
         }
 
         if (heatValue < WarmValue)
         {
-            return HeatMapType.Warm;
+            return HeatType.Warm;
         }
 
         if (heatValue < WarmerValue)
         {
-            return HeatMapType.Warmer;
+            return HeatType.Warmer;
         }
 
-        return HeatMapType.Warmest;
+        return HeatType.Warmest;
     }
 }

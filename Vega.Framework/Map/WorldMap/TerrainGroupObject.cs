@@ -1,4 +1,4 @@
-﻿using Vega.Framework.Map.GameObjects.World;
+﻿using Vega.Framework.Map.WorldMap.GameObjects;
 
 namespace Vega.Framework.Map;
 

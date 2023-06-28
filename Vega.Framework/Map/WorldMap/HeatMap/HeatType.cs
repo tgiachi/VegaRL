@@ -1,6 +1,6 @@
 ﻿namespace Vega.Framework.Map.HeatMap;
 
-public enum HeatMapType
+public enum HeatType
 {
     Coldest,
     Colder,

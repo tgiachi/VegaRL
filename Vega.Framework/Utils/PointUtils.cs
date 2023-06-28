@@ -1,4 +1,5 @@
-﻿using SadRogue.Primitives;
+﻿using System.Numerics;
+using SadRogue.Primitives;
 
 namespace Vega.Framework.Utils;
 
@@ -19,4 +20,8 @@ public static class PointUtils
         int maxY = Math.Max(p1.Y, p2.Y);
         return new Point(maxX, maxY);
     }
+
+    public static int Magnitude(this Point p) => (int)Math.Sqrt(p.X*p.X+p.Y*p.Y);
+
+    public static int Magnitude(this Vector2 p) => (int)Math.Sqrt(p.X*p.X+p.Y*p.Y);
 }
