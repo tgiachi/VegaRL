@@ -1,12 +1,9 @@
-﻿using System.Collections;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Numerics;
 using GoRogue.GameFramework;
 using GoRogue.Random;
-using Humanizer;
 using Microsoft.Extensions.Logging;
 using SadRogue.Primitives;
-using SadRogue.Primitives.GridViews;
 using Vega.Engine.Interfaces;
 using Vega.Engine.Services.Base;
 using Vega.Framework.Attributes;
@@ -64,9 +61,9 @@ public class WorldService : BaseVegaService<WorldService>, IWorldService
         {
             Name = _nameService.RandomName(NameTypeEnum.World)
         };
-        await GenerateNoiseMap(worldMap, config);
+        var result = await GenerateNoiseMap(worldMap, config);
         await PlaceRivers(worldMap, config);
-        await PlaceCities(worldMap, config);
+        await PlaceCities(worldMap, config, result.Item2);
 
         stopwatch.Stop();
         Logger.LogInformation("World map generated in {Ms} ms", stopwatch.ElapsedMilliseconds);
@@ -74,39 +71,41 @@ public class WorldService : BaseVegaService<WorldService>, IWorldService
     }
 
 
-    private async Task<WorldMap> GenerateNoiseMap(WorldMap worldMap, WorldMapConfig config)
+    private async Task<(WorldMap, Dictionary<string, List<TerrainGroupObject>>)> GenerateNoiseMap(
+        WorldMap worldMap, WorldMapConfig config
+    )
     {
-        Logger.LogInformation("Generating noise map type {Type}...", config.NoiseType);
+        Logger.LogInformation("Generating noise");
 
-        if (config.NoiseType != WorldMapNoiseType.AccidentalNoise)
+
+        var result = await GenerateAccidentalNoiseMap();
+        var tiles = await GetWorldMapTerrains();
+        NormalizeAccidentalNoise(ref result.mapData, result.noise);
+        await FillWorldMap(worldMap, tiles, result.mapData);
+        await UpdateNeighbors(worldMap);
+        await UpdateBitmasks(worldMap);
+        var floodFill = await FloodFill(worldMap);
+        var zonesData = new Dictionary<string, List<TerrainGroupObject>>();
+        foreach (var flood in floodFill)
         {
-            var values = config.NoiseType == WorldMapNoiseType.Perlin
-                ? await GeneratePerlinNoiseMap()
-                : await GenerateFastNoiseMap();
+            if (!zonesData.ContainsKey(flood.TileType))
+            {
+                zonesData.Add(flood.TileType, new List<TerrainGroupObject>());
+            }
 
-            var mappedValues = await GetWorldMapTerrains();
-
-            await FillOverMapAsync(worldMap, mappedValues, values);
-        }
-        else
-        {
-            var result = await GenerateAccidentalNoiseMap();
-            var tiles = await GetWorldMapTerrains();
-            NormalizeAccidentalNoise(ref result.mapData, result.noise);
-            await FillWorldMap(worldMap, tiles, result.mapData);
-            await UpdateNeighbors(worldMap);
-            await UpdateBitmasks(worldMap);
-            var floodFill = await FloodFill(worldMap);
-            await GenerateHeatMap(worldMap);
-            var moistureData = await GenerateMoistureMap(worldMap);
-            await PlaceRivers(worldMap, config);
-            await AdjustMoistureMap(worldMap, moistureData);
-            await GenerateBiomeMap(worldMap);
-            await GenerateClouds(worldMap);
+            zonesData[flood.TileType].Add(flood);
         }
 
 
-        return worldMap;
+        await GenerateHeatMap(worldMap);
+        var moistureData = await GenerateMoistureMap(worldMap);
+        await PlaceRivers(worldMap, config);
+        await AdjustMoistureMap(worldMap, moistureData);
+        await GenerateBiomeMap(worldMap);
+        await GenerateClouds(worldMap);
+
+
+        return (worldMap, zonesData);
     }
 
     private static Task GenerateBiomeMap(WorldMap map)
@@ -210,7 +209,6 @@ public class WorldService : BaseVegaService<WorldService>, IWorldService
                 {
                     moistureData.Data[tile.Position.X, tile.Position.Y] += 1f * tile.HeightValue;
                 }
-
 
                 tile.MoistureType = MoistureUtils.GetMoistureType(moistureData.GetData(tile.Position.X, tile.Position.Y));
             }
@@ -1003,30 +1001,17 @@ public class WorldService : BaseVegaService<WorldService>, IWorldService
         }
     }
 
-    private Task<WorldMap> PlaceCities(WorldMap worldMap, WorldMapConfig config)
+    private Task<WorldMap> PlaceCities(
+        WorldMap worldMap, WorldMapConfig config, Dictionary<string, List<TerrainGroupObject>> zones
+    )
     {
         Logger.LogInformation("Placing cities...");
+
+
         Logger.LogInformation("Cities placed");
         return Task.FromResult(worldMap);
     }
 
-    private Task<float[,]> GeneratePerlinNoiseMap()
-    {
-        var perlinNoise = new PerlinNoise(Random.Shared);
-        var overMapResults = new float[WorldMapSize.X, WorldMapSize.Y];
-        for (var i = 0; i < WorldMapSize.X; i++)
-        {
-            for (var j = 0; j < WorldMapSize.Y; j++)
-            {
-                var x = (float)j / WorldMapSize.X;
-                var y = (float)i / WorldMapSize.Y;
-                overMapResults[i, j] = (float)perlinNoise.Noise(x * 10, y * 10, 0.8f);
-            }
-        }
-
-        Logger.LogInformation("Perlin noise map generated");
-        return Task.FromResult(overMapResults);
-    }
 
     private Task<(MapData mapData, ImplicitFractal noise)> GenerateAccidentalNoiseMap(
         int terrainOctaves = 6, double terrainFrequency = 1.25
@@ -1201,32 +1186,5 @@ public class WorldService : BaseVegaService<WorldService>, IWorldService
 
 
         return Task.CompletedTask;
-    }
-
-    private async Task FillOverMapAsync(WorldMap overMap, SortedDictionary<double, TerrainEntity> perlinLimits, float[,] map)
-    {
-        for (var x = 0; x < WorldMapSize.X; x++)
-        {
-            for (int y = 0; y < WorldMapSize.Y; y++)
-            {
-                foreach (var perlinValue in perlinLimits)
-                {
-                    if (map[x, y] <= perlinValue.Key)
-                    {
-                        var tile = _tileService.GetGlyphFromHasTileEntity(perlinValue.Value);
-                        overMap.SetTerrain(
-                            new TerrainWorldGameObject(
-                                new Point(x, y),
-                                tile,
-                                perlinValue.Value.IsWalkable,
-                                perlinValue.Value.IsTransparent,
-                                perlinValue.Value.Flags
-                            )
-                        );
-                        break;
-                    }
-                }
-            }
-        }
     }
 }

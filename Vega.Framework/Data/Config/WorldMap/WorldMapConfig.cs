@@ -5,9 +5,7 @@ namespace Vega.Framework.Data.Config.WorldMap;
 public class WorldMapConfig
 {
     public PropEntity NumCities { get; set; } = new () {Range = new(1, 3)};
-
-    public WorldMapNoiseType NoiseType { get; set; } = WorldMapNoiseType.AccidentalNoise;
-
+    
     public PropEntity NumRivers { get; set; } = new() { Range = new(40, 40) };
 
     public float MinRiverHeight { get; set; } = 0.6f;
