@@ -1,28 +1,22 @@
 ﻿using SadConsole;
 using SadRogue.Integration;
 using SadRogue.Primitives;
-using Vega.Framework.Map.Biomes;
-using Vega.Framework.Map.HeatMap;
-using Vega.Framework.Map.Rivers;
+using Vega.Framework.Map.WorldMap.Biomes;
+using Vega.Framework.Map.WorldMap.HeatMap;
+using Vega.Framework.Map.WorldMap.Rivers;
 
-namespace Vega.Framework.Map.GameObjects.World;
+namespace Vega.Framework.Map.WorldMap.GameObjects;
 
 public class TerrainWorldGameObject : RogueLikeCell
 {
     public List<string> Flags { get; set; } = new();
-
     public List<River> Rivers { get; set; } = new();
-
     public int RiverSize { get; set; }
     public HeatType HeatType { get; set; }
     public MoistureType MoistureType { get; set; }
-
     public BiomeType BiomeType { get; set; }
-
     public float MoistureValue { get; set; }
-
     public int Bitmask { get; set; }
-
     public bool FloodFilled { get; set; }
     public TerrainWorldGameObject Left { get; set; }
     public TerrainWorldGameObject Right { get; set; }

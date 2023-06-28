@@ -1,6 +1,6 @@
 ﻿using SadRogue.Integration.Maps;
 
-namespace Vega.Framework.Map;
+namespace Vega.Framework.Map.WorldMap;
 
 public class WorldMap : RogueLikeMap
 {

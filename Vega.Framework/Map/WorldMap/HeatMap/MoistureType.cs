@@ -1,4 +1,4 @@
-﻿namespace Vega.Framework.Map.HeatMap;
+﻿namespace Vega.Framework.Map.WorldMap.HeatMap;
 
 public enum MoistureType
 {

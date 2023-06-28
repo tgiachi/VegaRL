@@ -1,4 +1,4 @@
-﻿namespace Vega.Framework.Map.Biomes;
+﻿namespace Vega.Framework.Map.WorldMap.Biomes;
 
 public enum BiomeType
 {

@@ -1,7 +1,8 @@
 ﻿using GoRogue.Random;
 using SadRogue.Primitives;
 using Vega.Framework.Map;
-using Vega.Framework.Map.GameObjects.World;
+using Vega.Framework.Map.WorldMap;
+using Vega.Framework.Map.WorldMap.GameObjects;
 
 
 namespace Vega.Framework.Utils;

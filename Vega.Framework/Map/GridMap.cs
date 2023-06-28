@@ -1,5 +1,6 @@
 ﻿using SadRogue.Integration.Maps;
 using SadRogue.Primitives;
+using Vega.Framework.Map.WorldMap;
 
 namespace Vega.Framework.Map;
 

@@ -2,6 +2,7 @@
 using Vega.Engine.Interfaces.Services;
 using Vega.Framework.Data.Config.WorldMap;
 using Vega.Framework.Map;
+using Vega.Framework.Map.WorldMap;
 
 namespace Vega.Engine.Interfaces;
 

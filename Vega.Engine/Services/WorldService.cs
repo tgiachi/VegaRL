@@ -12,9 +12,11 @@ using Vega.Framework.Data.Config.WorldMap;
 using Vega.Framework.Data.Entities.Names;
 using Vega.Framework.Data.Entities.Terrain;
 using Vega.Framework.Map;
-using Vega.Framework.Map.GameObjects.World;
-using Vega.Framework.Map.HeatMap;
-using Vega.Framework.Map.Rivers;
+using Vega.Framework.Map.WorldMap;
+using Vega.Framework.Map.WorldMap.Biomes;
+using Vega.Framework.Map.WorldMap.GameObjects;
+using Vega.Framework.Map.WorldMap.HeatMap;
+using Vega.Framework.Map.WorldMap.Rivers;
 using Vega.Framework.Noise;
 using Vega.Framework.Noise.AccidentalNoise.Enums;
 using Vega.Framework.Noise.AccidentalNoise.Implicit;
@@ -81,8 +83,6 @@ public class WorldService : BaseVegaService<WorldService>, IWorldService
             var mappedValues = await GetWorldMapTerrains();
 
             await FillOverMapAsync(worldMap, mappedValues, values);
-
-            var zones = FindZones(worldMap);
         }
         else
         {
@@ -97,10 +97,79 @@ public class WorldService : BaseVegaService<WorldService>, IWorldService
             var moistureData = await GenerateMoistureMap(worldMap);
             await PlaceRivers(worldMap, config);
             await AdjustMoistureMap(worldMap, moistureData);
+            await GenerateBiomeMap(worldMap);
+            await GenerateClouds(worldMap);
         }
 
 
         return worldMap;
+    }
+
+    private Task GenerateBiomeMap(WorldMap map)
+    {
+        for (var x = 0; x < map.Width; x++)
+        {
+            for (var y = 0; y < map.Height; y++)
+            {
+                var tile = map.GetTerrainAt<TerrainWorldGameObject>(new Point(x, y));
+                if (!tile.IsWalkable) continue;
+
+                tile.BiomeType = BiomeUtils.GetBiomeType(tile);
+            }
+        }
+
+        return Task.CompletedTask;
+    }
+
+    private Task<MapData> GenerateClouds(WorldMap map, float cloudCutOff = 0.55f)
+    {
+        var cloudMapData = new MapData(WorldMapSize.X, WorldMapSize.Y);
+        var cloudMap = new ImplicitFractal(
+            FractalType.Billow,
+            BasisType.Simplex,
+            InterpolationType.Quintic,
+            5,
+            1.65f,
+            GlobalRandom.DefaultRNG.NextInt(0, int.MaxValue)
+        );
+        var cloudTile = _tileService.FindTerrainByFlags("CLOUD").FirstOrDefault();
+        var coloredTile = _tileService.GetGlyphFromHasTileEntity(cloudTile);
+        coloredTile.Background = new Color(
+            coloredTile.Background.R,
+            coloredTile.Background.G,
+            coloredTile.Background.B,
+            0.5f
+        );
+        coloredTile.Foreground = new Color(
+            coloredTile.Foreground.R,
+            coloredTile.Foreground.G,
+            coloredTile.Foreground.B,
+            0.5f
+        );
+
+        for (int x = 0; x < map.Width; x++)
+        {
+            for (var y = 0; y < map.Height; y++)
+            {
+                var val = (float)cloudMap.Get(x, y);
+                cloudMapData.AddData(x, y, val);
+            }
+        }
+
+        for (int x = 0; x < map.Width; x++)
+        {
+            for (var y = 0; y < map.Height; y++)
+            {
+                var value = cloudMapData.GetData(x, y);
+                value = (value - cloudMapData.Min) / (cloudMapData.Max - cloudMapData.Min);
+                if (value > cloudCutOff)
+                {
+                    map.AddEntity(new CloudWorldGameObject(new Point(x, y), coloredTile));
+                }
+            }
+        }
+
+        return Task.FromResult(cloudMapData);
     }
 
     private Task<MapData> GenerateMoistureMap(WorldMap worldMap, int moistureOctaves = 4, double moistureFrequency = 3.0)
@@ -139,7 +208,7 @@ public class WorldService : BaseVegaService<WorldService>, IWorldService
                 }
 
 
-                tile.MoistureType = MoistureUtils.GetMoistureType(moistureData.Data[tile.Position.X, tile.Position.Y]);
+                tile.MoistureType = MoistureUtils.GetMoistureType(moistureData.GetData(tile.Position.X, tile.Position.Y));
             }
         }
 
@@ -185,7 +254,7 @@ public class WorldService : BaseVegaService<WorldService>, IWorldService
                     heatmap.Data[tile.Position.X, tile.Position.Y] += 0.3f * tile.HeightValue;
                 }
 
-                tile.HeatType = HeatMapUtils.ValueToHeat(heatmap.Data[tile.Position.X, tile.Position.Y]);
+                tile.HeatType = HeatMapUtils.ValueToHeat(heatmap.GetData(tile.Position.X, tile.Position.Y));
             }
         }
 
@@ -363,8 +432,8 @@ public class WorldService : BaseVegaService<WorldService>, IWorldService
                 }
             }
         }
-        return Task.CompletedTask;
 
+        return Task.CompletedTask;
     }
 
     private void AddMoisture(WorldMap map, MapData moistureData, TerrainWorldGameObject t, float amount)
@@ -983,7 +1052,7 @@ public class WorldService : BaseVegaService<WorldService>, IWorldService
                 if (value > mapData.Max) mapData.Max = value;
                 if (value < mapData.Min) mapData.Min = value;
 
-                mapData.Data[x, y] = value;
+                mapData.AddData(x, y, value);
             }
         }
 
@@ -1022,7 +1091,7 @@ public class WorldService : BaseVegaService<WorldService>, IWorldService
                 if (heightValue > mapData.Max) mapData.Max = heightValue;
                 if (heightValue < mapData.Min) mapData.Min = heightValue;
 
-                mapData.Data[x, y] = heightValue;
+                mapData.AddData(x, y, heightValue);
             }
         }
     }
@@ -1065,25 +1134,6 @@ public class WorldService : BaseVegaService<WorldService>, IWorldService
         return Task.FromResult(terrains);
     }
 
-    public IEnumerable<Zone> FindZones(WorldMap map, int count = 5, int radius = 6)
-    {
-        var zoneFinder = new ZoneFinder(map);
-        var zones = new List<Zone>();
-        foreach (var _ in Enumerable.Range(0, count))
-        {
-            Zone zone = null;
-
-            while (zone == null)
-            {
-                zone = zoneFinder.FindZone(map.WalkabilityView.Positions().RandomElement(), radius);
-            }
-
-
-            zones.Add(zone);
-        }
-
-        return zones;
-    }
 
     private async Task UpdateBitmasks(WorldMap map)
     {
@@ -1102,7 +1152,7 @@ public class WorldService : BaseVegaService<WorldService>, IWorldService
         {
             for (var y = 0; y < WorldMapSize.Y; y++)
             {
-                float value = mapData.Data[x, y];
+                float value = mapData.GetData(x, y);
 
                 //normalize our value between 0 and 1
                 value = (value - mapData.Min) / (mapData.Max - mapData.Min);

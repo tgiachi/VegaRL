@@ -1,4 +1,4 @@
-﻿namespace Vega.Framework.Map.Rivers;
+﻿namespace Vega.Framework.Map.WorldMap.Rivers;
 
 public class RiverGroup
 {

@@ -1,6 +1,6 @@
-﻿using Vega.Framework.Map.GameObjects.World;
+﻿using Vega.Framework.Map.WorldMap.GameObjects;
 
-namespace Vega.Framework.Map.Biomes;
+namespace Vega.Framework.Map.WorldMap.Biomes;
 
 public class BiomeUtils
 {
