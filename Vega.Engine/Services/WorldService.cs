@@ -126,15 +126,17 @@ public class WorldService : BaseVegaService<WorldService>, IWorldService
         return Task.CompletedTask;
     }
 
-    private Task<MapData> GenerateClouds(WorldMap map, float cloudCutOff = 0.55f)
+    private Task<MapData> GenerateClouds(
+        WorldMap map, float cloudCutOff = 0.55f, int cloudOctaves = 5, float cloudFrequency = 1.65f
+    )
     {
         var cloudMapData = new MapData(WorldMapSize.X, WorldMapSize.Y);
         var cloudMap = new ImplicitFractal(
             FractalType.Billow,
             BasisType.Simplex,
             InterpolationType.Quintic,
-            5,
-            1.65f,
+            cloudOctaves,
+            cloudFrequency,
             GlobalRandom.DefaultRNG.NextInt(0, int.MaxValue)
         );
         var cloudTile = _tileService.FindTerrainByFlags("CLOUD").FirstOrDefault();
