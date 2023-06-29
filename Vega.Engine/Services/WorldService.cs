@@ -60,20 +60,28 @@ public class WorldService : BaseVegaService<WorldService>, IWorldService
 
     public async Task<WorldMap> GenerateWorldMapAsync(WorldMapConfig config)
     {
-        var stopwatch = Stopwatch.StartNew();
-        Logger.LogInformation("Generating world map...");
-        var worldMap = new WorldMap(WorldMapSize.X, WorldMapSize.Y)
+        try
         {
-            Name = _nameService.RandomName(NameTypeEnum.World)
-        };
-        var result = await GenerateNoiseMap(worldMap, config);
-        await PlaceRivers(worldMap, config);
-        var lands = await PlaceLands(worldMap, config, result.Item2);
-        await PlacePlayer(worldMap, lands);
+            var stopwatch = Stopwatch.StartNew();
+            Logger.LogInformation("Generating world map...");
+            var worldMap = new WorldMap(WorldMapSize.X, WorldMapSize.Y)
+            {
+                Name = _nameService.RandomName(NameTypeEnum.World)
+            };
+            var result = await GenerateNoiseMap(worldMap, config);
+            await PlaceRivers(worldMap, config);
+            var lands = await PlaceLands(worldMap, config, result.Item2);
+            await PlacePlayer(worldMap, lands);
 
-        stopwatch.Stop();
-        Logger.LogInformation("World map generated in {Ms} ms", stopwatch.ElapsedMilliseconds);
-        return worldMap;
+            stopwatch.Stop();
+            Logger.LogInformation("World map generated in {Ms} ms", stopwatch.ElapsedMilliseconds);
+            return worldMap;
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error generating world map");
+            throw;
+        }
     }
 
 
