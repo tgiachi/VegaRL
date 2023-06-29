@@ -3,6 +3,7 @@
 public enum WorldMapLayerType
 {
     Terrain,
+    Land,
     Player,
     Weather,
 }

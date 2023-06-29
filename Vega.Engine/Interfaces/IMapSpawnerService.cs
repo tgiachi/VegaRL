@@ -8,5 +8,5 @@ namespace Vega.Engine.Interfaces;
 
 public interface IMapSpawnerService : IVegaService
 {
-    Task<IEnumerable<GameObject>?> SpawnAsync(Map map, TerrainGroupObject group);
+    Task<IEnumerable<IGameObject>?> SpawnAsync(Map map, TerrainGroupObject group);
 }

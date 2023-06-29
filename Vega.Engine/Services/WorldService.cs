@@ -1013,16 +1013,23 @@ public class WorldService : BaseVegaService<WorldService>, IWorldService
     {
         var count = RandomUtils.Range(2, 30);
 
+        var placebleZones = zones.Where(s => s.Key != "WATER" && s.Key != "MOUNTAIN")
+            .ToDictionary(pair => pair.Key, pair => pair.Value);
+
         Logger.LogInformation("Placing cities...");
 
         foreach (var _ in Enumerable.Range(0, count))
         {
             var spawnResult = await _mapSpawnerService.SpawnAsync(
                 worldMap,
-                zones.Values.SelectMany(s => s.ToList()).Where(k => k.Rectangle.Area > 10).RandomElement()
+                placebleZones[placebleZones.Keys.RandomElement()].RandomElement()
             );
             if (spawnResult != null)
             {
+                foreach (var gameObject in spawnResult)
+                {
+                    worldMap.AddEntity(gameObject);
+                }
             }
         }
 
