@@ -31,6 +31,7 @@ public class WorldService : BaseVegaService<WorldService>, IWorldService
 {
     private readonly ITileService _tileService;
     private readonly INameService _nameService;
+    private readonly IMapSpawnerService _mapSpawnerService;
     public Point WorldMapSize { get; } = new(180, 180);
     public Point GridMapSize { get; } = new(250, 250);
     public WorldMap CurrentWorldMap { get; set; }
@@ -38,7 +39,7 @@ public class WorldService : BaseVegaService<WorldService>, IWorldService
 
     public WorldService(
         ILogger<WorldService> logger, IMessageBusService messageBusService, ITileService tileService,
-        INameService nameService
+        INameService nameService, IMapSpawnerService mapSpawnerService
     ) : base(
         logger,
         messageBusService
@@ -46,6 +47,7 @@ public class WorldService : BaseVegaService<WorldService>, IWorldService
     {
         _tileService = tileService;
         _nameService = nameService;
+        _mapSpawnerService = mapSpawnerService;
     }
 
     public override Task<bool> LoadAsync()
@@ -65,7 +67,7 @@ public class WorldService : BaseVegaService<WorldService>, IWorldService
         };
         var result = await GenerateNoiseMap(worldMap, config);
         await PlaceRivers(worldMap, config);
-        await PlaceCities(worldMap, config, result.Item2);
+        await PlaceLands(worldMap, config, result.Item2);
 
         stopwatch.Stop();
         Logger.LogInformation("World map generated in {Ms} ms", stopwatch.ElapsedMilliseconds);
@@ -1005,15 +1007,27 @@ public class WorldService : BaseVegaService<WorldService>, IWorldService
         }
     }
 
-    private Task<WorldMap> PlaceCities(
+    private async Task<WorldMap> PlaceLands(
         WorldMap worldMap, WorldMapConfig config, Dictionary<string, List<TerrainGroupObject>> zones
     )
     {
+        var count = RandomUtils.Range(2, 30);
+
         Logger.LogInformation("Placing cities...");
 
+        foreach (var _ in Enumerable.Range(0, count))
+        {
+            var spawnResult = await _mapSpawnerService.SpawnAsync(
+                worldMap,
+                zones.Values.SelectMany(s => s.ToList()).Where(k => k.Rectangle.Area > 10).RandomElement()
+            );
+            if (spawnResult != null)
+            {
+            }
+        }
 
         Logger.LogInformation("Cities placed");
-        return Task.FromResult(worldMap);
+        return worldMap;
     }
 
 
