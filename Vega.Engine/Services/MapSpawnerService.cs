@@ -5,6 +5,7 @@ using Vega.Engine.Interfaces;
 using Vega.Engine.Services.Base;
 using Vega.Framework.Attributes;
 using Vega.Framework.Data.Entities.WorldMap;
+using Vega.Framework.Generators;
 using Vega.Framework.Map;
 
 namespace Vega.Engine.Services;
@@ -70,13 +71,16 @@ public class MapSpawnerService : BaseDataLoaderVegaService<MapSpawnerService>, I
     {
         var gameObjects = new List<GameObject>();
 
+        var roadsGeneration = RoadsAreaBuilder.Instance;
+        roadsGeneration.GenerateBuildingArea(group.Rectangle.Width, group.Rectangle.Height);
         if (!_spawnLocations.ContainsKey(group.TileType.ToLower()))
         {
             Logger.LogWarning("No spawn locations found for group {Type}", group.TileType);
             return Task.FromResult<IEnumerable<GameObject>>(null);
         }
 
-        
+
+
 
         return Task.FromResult<IEnumerable<GameObject>>(gameObjects);
     }
