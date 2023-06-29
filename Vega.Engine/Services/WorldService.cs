@@ -4,6 +4,7 @@ using GoRogue.GameFramework;
 using GoRogue.Random;
 using Microsoft.Extensions.Logging;
 using SadRogue.Primitives;
+using SadRogue.Primitives.GridViews;
 using Vega.Engine.Interfaces;
 using Vega.Engine.Services.Base;
 using Vega.Framework.Attributes;
@@ -67,7 +68,8 @@ public class WorldService : BaseVegaService<WorldService>, IWorldService
         };
         var result = await GenerateNoiseMap(worldMap, config);
         await PlaceRivers(worldMap, config);
-        await PlaceLands(worldMap, config, result.Item2);
+        var lands = await PlaceLands(worldMap, config, result.Item2);
+        await PlacePlayer(worldMap, lands);
 
         stopwatch.Stop();
         Logger.LogInformation("World map generated in {Ms} ms", stopwatch.ElapsedMilliseconds);
@@ -1007,11 +1009,12 @@ public class WorldService : BaseVegaService<WorldService>, IWorldService
         }
     }
 
-    private async Task<WorldMap> PlaceLands(
+    private async Task<IEnumerable<LandGameObject>> PlaceLands(
         WorldMap worldMap, WorldMapConfig config, Dictionary<string, List<TerrainGroupObject>> zones
     )
     {
         var count = RandomUtils.Range(2, 30);
+        var landGameObjects = new List<LandGameObject>();
 
         var placebleZones = zones.Where(s => s.Key != "WATER" && s.Key != "MOUNTAIN")
             .ToDictionary(pair => pair.Key, pair => pair.Value);
@@ -1026,6 +1029,8 @@ public class WorldService : BaseVegaService<WorldService>, IWorldService
             );
             if (spawnResult != null)
             {
+                landGameObjects.AddRange(spawnResult.Cast<LandGameObject>());
+
                 foreach (var gameObject in spawnResult)
                 {
                     worldMap.AddEntity(gameObject);
@@ -1034,7 +1039,24 @@ public class WorldService : BaseVegaService<WorldService>, IWorldService
         }
 
         Logger.LogInformation("Cities placed");
-        return worldMap;
+        return landGameObjects;
+    }
+
+    private async Task PlacePlayer(WorldMap worldMap, IEnumerable<LandGameObject> lands)
+    {
+        var playerPosition = lands.RandomElement();
+
+        var playerTile = _mapSpawnerService.SearchLandTileByFlag("player").FirstOrDefault();
+
+        if (playerTile == null)
+        {
+            throw new Exception("Player tile not found");
+        }
+
+        var playerResult = _tileService.GetTile(playerTile);
+
+        worldMap.AddEntity(new WorldPlayerGameObject("player", playerPosition.Position, playerResult.coloredGlyph, true, true));
+
     }
 
 

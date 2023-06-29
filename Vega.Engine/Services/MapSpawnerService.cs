@@ -108,10 +108,14 @@ public class MapSpawnerService : BaseDataLoaderVegaService<MapSpawnerService>, I
         {
             var land = _lands[landGroup.Lands.RandomElement().ToLower()];
             var tile = _tileService.GetGlyphFromHasTileEntity(land);
-            gameObjects.Add(new LandGameObject(position, tile, true, false));
+            gameObjects.Add(new LandGameObject(land.Id, position, tile, true, false));
         }
 
-
         return Task.FromResult(gameObjects.AsEnumerable());
+    }
+
+    public IEnumerable<LandEntity> SearchLandTileByFlag(string flag)
+    {
+        return _lands.Values.Where(x => x.SearchFlags(flag) != null);
     }
 }
