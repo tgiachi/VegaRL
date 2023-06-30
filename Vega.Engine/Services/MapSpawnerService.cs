@@ -6,8 +6,9 @@ using Vega.Engine.Interfaces;
 using Vega.Engine.Services.Base;
 using Vega.Framework.Attributes;
 using Vega.Framework.Data.Entities.WorldMap;
-using Vega.Framework.Generators;
+
 using Vega.Framework.Map;
+using Vega.Framework.Map.WorldMap;
 using Vega.Framework.Map.WorldMap.GameObjects;
 using Vega.Framework.Utils.Random;
 
@@ -75,14 +76,14 @@ public class MapSpawnerService : BaseDataLoaderVegaService<MapSpawnerService>, I
         return Task.FromResult(true);
     }
 
-    public Task<IEnumerable<IGameObject>?> SpawnAsync(Map map, TerrainGroupObject group)
+    public Task<LandZoneObject?> SpawnAsync(Map map, TerrainGroupObject group)
     {
-        var gameObjects = new List<IGameObject>();
+        var gameObjects = new List<LandGameObject>();
 
         if (!_spawnLocations.ContainsKey(group.TileType.ToLower()))
         {
             Logger.LogWarning("No spawn locations found for group {Type}", group.TileType);
-            return Task.FromResult<IEnumerable<IGameObject>>(null);
+            return Task.FromResult<LandZoneObject>(null);
         }
 
         var spawnLocation = _spawnLocations[group.TileType.ToLower()].RandomElement();
@@ -111,7 +112,7 @@ public class MapSpawnerService : BaseDataLoaderVegaService<MapSpawnerService>, I
             gameObjects.Add(new LandGameObject(land.Id, position, tile, true, false));
         }
 
-        return Task.FromResult(gameObjects.AsEnumerable());
+        return Task.FromResult(new LandZoneObject(gameObjects) );
     }
 
     public IEnumerable<LandEntity> SearchLandTileByFlag(string flag)

@@ -4,7 +4,6 @@ using GoRogue.GameFramework;
 using GoRogue.Random;
 using Microsoft.Extensions.Logging;
 using SadRogue.Primitives;
-using SadRogue.Primitives.GridViews;
 using Vega.Engine.Interfaces;
 using Vega.Engine.Services.Base;
 using Vega.Framework.Attributes;
@@ -1018,7 +1017,7 @@ public class WorldService : BaseVegaService<WorldService>, IWorldService
     }
 
     private async Task<IEnumerable<LandGameObject>> PlaceLands(
-        WorldMap worldMap, WorldMapConfig config, Dictionary<string, List<TerrainGroupObject>> zones
+        Map worldMap, WorldMapConfig config, Dictionary<string, List<TerrainGroupObject>> zones
     )
     {
         var count = RandomUtils.Range(2, 30);
@@ -1037,9 +1036,9 @@ public class WorldService : BaseVegaService<WorldService>, IWorldService
             );
             if (spawnResult != null)
             {
-                landGameObjects.AddRange(spawnResult.Cast<LandGameObject>());
+                landGameObjects.AddRange(spawnResult.LandGameObjects);
 
-                foreach (var gameObject in spawnResult)
+                foreach (var gameObject in spawnResult.LandGameObjects)
                 {
                     worldMap.AddEntity(gameObject);
                 }
@@ -1063,8 +1062,9 @@ public class WorldService : BaseVegaService<WorldService>, IWorldService
 
         var playerResult = _tileService.GetTile(playerTile);
 
-        worldMap.AddEntity(new WorldPlayerGameObject("player", playerPosition.Position, playerResult.coloredGlyph, true, true));
-
+        worldMap.AddEntity(
+            new WorldPlayerGameObject("player", playerPosition.Position, playerResult.coloredGlyph, true, true)
+        );
     }
 
 
@@ -1201,25 +1201,19 @@ public class WorldService : BaseVegaService<WorldService>, IWorldService
                 //normalize our value between 0 and 1
                 value = (value - mapData.Min) / (mapData.Max - mapData.Min);
 
-                foreach (var perlinValue in perlinLimits)
-                {
-                    if (value <= perlinValue.Key)
-                    {
-                        var tile = _tileService.GetGlyphFromHasTileEntity(perlinValue.Value);
-                        var t = new TerrainWorldGameObject(
-                            new Point(x, y),
-                            tile,
-                            perlinValue.Value.IsWalkable,
-                            perlinValue.Value.IsTransparent,
-                            perlinValue.Value.Flags
-                        );
+                var key = perlinLimits.CheckValueInDictionary<double, TerrainEntity>((double)value);
+                var tile = _tileService.GetGlyphFromHasTileEntity(key);
+                var t = new TerrainWorldGameObject(
+                    new Point(x, y),
+                    tile,
+                    key.IsWalkable,
+                    key.IsTransparent,
+                    key.Flags
+                );
 
 
-                        t.HeightValue = value;
-                        worldMap.SetTerrain(t);
-                        break;
-                    }
-                }
+                t.HeightValue = value;
+                worldMap.SetTerrain(t);
             }
         }
     }
