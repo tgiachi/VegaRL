@@ -1,5 +1,6 @@
 ﻿using SadConsole;
 using SadRogue.Integration;
+using SadRogue.Integration.FieldOfView.Memory;
 using SadRogue.Primitives;
 using Vega.Framework.Map.WorldMap.Biomes;
 using Vega.Framework.Map.WorldMap.HeatMap;
@@ -7,7 +8,7 @@ using Vega.Framework.Map.WorldMap.Rivers;
 
 namespace Vega.Framework.Map.WorldMap.GameObjects;
 
-public class TerrainWorldGameObject : RogueLikeCell
+public class TerrainWorldGameObject : MemoryAwareRogueLikeCell
 {
     public List<string> Flags { get; set; } = new();
     public List<River> Rivers { get; set; } = new();

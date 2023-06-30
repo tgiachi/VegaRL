@@ -50,11 +50,22 @@ public class WorldService : BaseVegaService<WorldService>, IWorldService
         _mapSpawnerService = mapSpawnerService;
     }
 
-    public override Task<bool> LoadAsync()
+    public override async Task<bool> LoadAsync()
     {
-        GenerateWorldMapAsync(new WorldMapConfig());
+        while (CurrentWorldMap == null)
+        {
+            try
+            {
+                CurrentWorldMap = await GenerateWorldMapAsync(new WorldMapConfig());
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Error generating world map");
+            }
+        }
 
-        return Task.FromResult(true);
+
+        return true;
     }
 
     public async Task<WorldMap> GenerateWorldMapAsync(WorldMapConfig config)
@@ -70,7 +81,19 @@ public class WorldService : BaseVegaService<WorldService>, IWorldService
             var result = await GenerateNoiseMap(worldMap, config);
             await PlaceRivers(worldMap, config);
             var lands = await PlaceLands(worldMap, config, result.Item2);
-            await PlacePlayer(worldMap, lands);
+            if (!lands.Any())
+            {
+                return await GenerateWorldMapAsync(config);
+            }
+
+            await PlaceRoads(worldMap, lands);
+
+            if (!lands.SelectMany(s => s.LandGameObjects).Any())
+            {
+                return await GenerateWorldMapAsync(config);
+            }
+
+            // await PlacePlayer(worldMap, lands.SelectMany(s => s.LandGameObjects));
 
             stopwatch.Stop();
             Logger.LogInformation("World map generated in {Ms} ms", stopwatch.ElapsedMilliseconds);
@@ -81,6 +104,11 @@ public class WorldService : BaseVegaService<WorldService>, IWorldService
             Logger.LogError(ex, "Error generating world map");
             throw;
         }
+    }
+
+    private Task PlaceRoads(Map map, IEnumerable<LandZoneObject> zones)
+    {
+        return Task.CompletedTask;
     }
 
 
@@ -128,7 +156,10 @@ public class WorldService : BaseVegaService<WorldService>, IWorldService
             for (var y = 0; y < map.Height; y++)
             {
                 var tile = map.GetTerrainAt<TerrainWorldGameObject>(new Point(x, y));
-                if (!tile.IsWalkable) continue;
+                if (!tile.IsWalkable)
+                {
+                    continue;
+                }
 
                 tile.BiomeType = BiomeUtils.GetBiomeType(tile);
             }
@@ -138,7 +169,7 @@ public class WorldService : BaseVegaService<WorldService>, IWorldService
     }
 
     private Task<MapData> GenerateClouds(
-        WorldMap map, float cloudCutOff = 0.55f, int cloudOctaves = 5, float cloudFrequency = 1.65f
+        Map map, float cloudCutOff = 0.55f, int cloudOctaves = 5, float cloudFrequency = 1.65f
     )
     {
         var cloudMapData = new MapData(WorldMapSize.X, WorldMapSize.Y);
@@ -242,7 +273,7 @@ public class WorldService : BaseVegaService<WorldService>, IWorldService
             InterpolationType.Quintic,
             heatOctaves,
             heatFrequency,
-            GlobalRandom.DefaultRNG.NextInt(1, Int32.MaxValue)
+            GlobalRandom.DefaultRNG.NextInt(1, int.MaxValue)
         );
 
         var heatMap = new ImplicitCombiner(CombinerType.Multiply);
@@ -430,7 +461,22 @@ public class WorldService : BaseVegaService<WorldService>, IWorldService
         }
 
         var riverGroups = await BuildRiverGroups(worldMap);
+        var riverTile = _mapSpawnerService.SearchLandTileByFlag("RIVER").FirstOrDefault();
+        var riverApparance = _tileService.GetTile(riverTile);
+
         await DigRiverGroups(riverGroups);
+        foreach (var riverGroup in riverGroups)
+        {
+            foreach (var river in riverGroup.Rivers)
+            {
+                foreach (var tile in river.Tiles)
+                {
+                    tile.Appearance.Background = riverApparance.coloredGlyph.Background;
+                    tile.Appearance.Foreground = riverApparance.coloredGlyph.Foreground;
+                    tile.Appearance.Glyph = riverApparance.coloredGlyph.Glyph;
+                }
+            }
+        }
 
         Logger.LogInformation("Rivers placed");
         return worldMap;
@@ -1016,13 +1062,13 @@ public class WorldService : BaseVegaService<WorldService>, IWorldService
         }
     }
 
-    private async Task<IEnumerable<LandGameObject>> PlaceLands(
+    private async Task<IEnumerable<LandZoneObject>> PlaceLands(
         Map worldMap, WorldMapConfig config, Dictionary<string, List<TerrainGroupObject>> zones
     )
     {
         var count = RandomUtils.Range(2, 30);
         var landGameObjects = new List<LandGameObject>();
-
+        var landZones = new List<LandZoneObject>();
         var placebleZones = zones.Where(s => s.Key != "WATER" && s.Key != "MOUNTAIN")
             .ToDictionary(pair => pair.Key, pair => pair.Value);
 
@@ -1037,6 +1083,7 @@ public class WorldService : BaseVegaService<WorldService>, IWorldService
             if (spawnResult != null)
             {
                 landGameObjects.AddRange(spawnResult.LandGameObjects);
+                landZones.Add(spawnResult);
 
                 foreach (var gameObject in spawnResult.LandGameObjects)
                 {
@@ -1046,7 +1093,7 @@ public class WorldService : BaseVegaService<WorldService>, IWorldService
         }
 
         Logger.LogInformation("Cities placed");
-        return landGameObjects;
+        return landZones;
     }
 
     private async Task PlacePlayer(WorldMap worldMap, IEnumerable<LandGameObject> lands)

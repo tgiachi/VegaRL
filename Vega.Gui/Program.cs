@@ -5,15 +5,19 @@ using SadConsole;
 using SadRogue.Primitives;
 using Serilog;
 using Vega.Engine;
+using Vega.Engine.Interfaces;
 using Vega.Framework.Data.Config;
 using Vega.Framework.Utils.Random;
 using Vega.Gui.Sinks;
+using Vega.Gui.Windows;
 using Console = SadConsole.Console;
 
 namespace Vega.Gui;
 
 class Program
 {
+    private static Point _windowSize;
+
     private static async Task Main(string[] args)
     {
         var options = ConfigService.Instance.Initialize(args);
@@ -32,6 +36,10 @@ class Program
             options.Ui.ScreenHeight * options.Ui.ScaleFactor,
             options.Ui.DefaultUiFont
         );
+        _windowSize = new Point(
+            options.Ui.ScreenWidth * options.Ui.ScaleFactor,
+            options.Ui.ScreenHeight * options.Ui.ScaleFactor
+        );
 
         Game.Instance.OnStart = Init;
         Game.Instance.Run();
@@ -42,14 +50,25 @@ class Program
     {
         InstancesHolder.Manager.PreloadFonts(Game.Instance);
         // This code uses the default console created for you at start
-        var startingConsole = Game.Instance.StartingConsole;
 
-        startingConsole.FillWithRandomGarbage(SadConsole.Game.Instance.Fonts.Values.RandomElement());
-        startingConsole.Fill(new Rectangle(3, 3, 23, 3), Color.Violet, Color.Black, 0, Mirror.None);
-        startingConsole.Print(4, 4, "Hello from SadConsole");
+
+
 
         InstancesHolder.Manager.LoadServices();
+        var worldService = InstancesHolder.Manager.Resolve<IWorldService>();
+        var mapConsole = new TestWorldMapWindow(
+            _windowSize.X,
+            _windowSize.Y,
+            worldService.CurrentWorldMap.Width,
+            worldService.CurrentWorldMap.Height
+        );
 
+        mapConsole.UseKeyboard = true;
+
+
+
+        Game.Instance.Screen = mapConsole;
+        Game.Instance.DestroyDefaultStartingConsole();
         // --------------------------------------------------------------
         // This code replaces the default starting console with your own.
         // If you use this code, delete the code above.

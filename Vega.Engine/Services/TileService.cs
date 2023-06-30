@@ -203,7 +203,28 @@ public class TileService : BaseDataLoaderVegaService<TileService>, ITileService
         throw new Exception("No tileId or sym found");
     }
 
-    public IEnumerable<TerrainEntity> FindTerrainByFlags(params string[] flags) => _terrainEntities.Values.FindByFlags(flags);
+    public IEnumerable<TerrainEntity> FindTerrainByFlags(params string[] flags)
+    {
+        var tiles = _terrainEntities.Values.FindByFlags(flags).ToList();
+        return tiles.Select(
+            s => new TerrainEntity()
+            {
+                Background = s.Background,
+                Foreground = s.Foreground,
+                Id = s.Id,
+                IsTransparent = s.IsTransparent,
+                IsWalkable = s.IsWalkable,
+                Name = s.Name,
+                Sym = s.Sym,
+                Flags = new List<string>(s.Flags),
+                Description = s.Description,
+                Comment = s.Comment,
+                Smash = s.Smash,
+                IsBreakable = s.IsBreakable,
+                MoveCost = s.MoveCost
+            }
+        );
+    }
 
     private static int GetGlyphFromTileSet(string glyph)
     {
