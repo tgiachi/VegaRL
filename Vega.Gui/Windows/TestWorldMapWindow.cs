@@ -78,6 +78,7 @@ public class TestWorldMapWindow : Console
                 {
                     this.SetGlyph(x, y, tile!.Appearance);
                 }
+                
             }
         }
     }
