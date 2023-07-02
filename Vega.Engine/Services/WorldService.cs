@@ -149,7 +149,7 @@ public class WorldService : BaseVegaService<WorldService>, IWorldService
         return (worldMap, zonesData);
     }
 
-    private static Task GenerateBiomeMap(WorldMap map)
+    private static Task GenerateBiomeMap(Map map)
     {
         for (var x = 0; x < map.Width; x++)
         {
@@ -461,8 +461,8 @@ public class WorldService : BaseVegaService<WorldService>, IWorldService
         }
 
         var riverGroups = await BuildRiverGroups(worldMap);
-        var riverTile = _mapSpawnerService.SearchLandTileByFlag("RIVER").FirstOrDefault();
-        var riverApparance = _tileService.GetTile(riverTile);
+        var riverTile = _tileService.FindTerrainByFlags("RIVER").FirstOrDefault();
+        var riverAppearance = _tileService.GetTile(riverTile);
 
         await DigRiverGroups(riverGroups);
         foreach (var riverGroup in riverGroups)
@@ -471,9 +471,9 @@ public class WorldService : BaseVegaService<WorldService>, IWorldService
             {
                 foreach (var tile in river.Tiles)
                 {
-                    tile.Appearance.Background = riverApparance.coloredGlyph.Background;
-                    tile.Appearance.Foreground = riverApparance.coloredGlyph.Foreground;
-                    tile.Appearance.Glyph = riverApparance.coloredGlyph.Glyph;
+                    tile.Appearance.Background = riverAppearance.coloredGlyph.Background;
+                    tile.Appearance.Foreground = riverAppearance.coloredGlyph.Foreground;
+                    tile.Appearance.Glyph = riverAppearance.coloredGlyph.Glyph;
                 }
             }
         }
@@ -491,7 +491,7 @@ public class WorldService : BaseVegaService<WorldService>, IWorldService
                 var t = map.GetTerrainAt<TerrainWorldGameObject>(new Point(x, y));
                 if (t.HeightType == "RIVER")
                 {
-                    AddMoisture(map, moistureData, t, (int)60);
+                    AddMoisture(map, moistureData, t, 60);
                 }
             }
         }
@@ -1071,6 +1071,7 @@ public class WorldService : BaseVegaService<WorldService>, IWorldService
         var landZones = new List<LandZoneObject>();
         var placebleZones = zones.Where(s => s.Key != "WATER" && s.Key != "MOUNTAIN")
             .ToDictionary(pair => pair.Key, pair => pair.Value);
+
 
         Logger.LogInformation("Placing cities...");
 

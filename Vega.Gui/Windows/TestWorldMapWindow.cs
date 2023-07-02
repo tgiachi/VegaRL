@@ -4,6 +4,7 @@ using SadConsole.Input;
 using SadRogue.Integration.FieldOfView.Memory;
 using SadRogue.Primitives;
 using Vega.Engine.Interfaces;
+using Vega.Framework.Map.WorldMap.GameObjects;
 using Console = SadConsole.Console;
 
 namespace Vega.Gui.Windows;
@@ -19,6 +20,7 @@ public class TestWorldMapWindow : Console
         bufferHeight
     )
     {
+        IsFocused = true;
         UseKeyboard = true;
         UseMouse = true;
         _worldService = InstancesHolder.Manager.Resolve<IWorldService>();

@@ -11,9 +11,9 @@ public class VegaUiOption
     public int ScreenHeight { get; set; } = 25;
 
     [Option('s', "scale", Required = false, HelpText = "Screen scale factor")]
-    public int ScaleFactor { get; set; } = 2;
+    public int ScaleFactor { get; set; } = 3;
 
     public string DefaultColorScheme { get; set; } = "c_default";
-    public string DefaultUiFont { get; set; } = "Assets/Fonts/IBM_ext.font";
+    public string DefaultUiFont { get; set; } = "Assets/Fonts/kawaii.font";
     public string DefaultWorldMapFont { get; set; } = "Assets/Fonts/DefaultOverMap.font";
 }

@@ -90,6 +90,10 @@ public class MapSpawnerService : BaseDataLoaderVegaService<MapSpawnerService>, I
 
         var landGroup = _landSpawnGroups[spawnLocation.LandGroupId.ToLower()];
         var totalPositions = group.Rectangle.Width * group.Rectangle.Height;
+        if (totalPositions >= 10000)
+        {
+            totalPositions = 100;
+        }
         var spawnCount = RandomUtils.Range(totalPositions / 2, totalPositions);
         var spawnCurrent = 0;
         var visited = new HashSet<Point>();
@@ -117,6 +121,6 @@ public class MapSpawnerService : BaseDataLoaderVegaService<MapSpawnerService>, I
 
     public IEnumerable<LandEntity> SearchLandTileByFlag(string flag)
     {
-        return _lands.Values.Where(x => x.SearchFlags(flag) != null);
+        return _lands.Values.Where(x =>x.Flags.Contains(flag) == true);
     }
 }

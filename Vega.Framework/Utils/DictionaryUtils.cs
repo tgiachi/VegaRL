@@ -4,19 +4,16 @@ public static class DictionaryUtils
 {
     public static TValue CheckValueInDictionary<TKey, TValue>(this IDictionary<double, TValue> dictionary, double value)
     {
-        var closestKey = dictionary.Keys.First();
-        var smallestDifference = Math.Abs(value - closestKey);
-
-        foreach (var key in dictionary.Keys)
+        foreach (var val in dictionary.Keys)
         {
-            var currentDifference = Math.Abs(value - key);
-            if (currentDifference < smallestDifference)
+            if (value <= val )
             {
-                smallestDifference = currentDifference;
-                closestKey = key;
+                return dictionary[val];
             }
+
         }
 
+        var closestKey = dictionary.Keys.Aggregate((x, y) => Math.Abs(x - value) < Math.Abs(y - value) ? x : y);
         return dictionary[closestKey];
     }
 }

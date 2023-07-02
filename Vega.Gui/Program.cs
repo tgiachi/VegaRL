@@ -41,6 +41,7 @@ class Program
             options.Ui.ScreenHeight * options.Ui.ScaleFactor
         );
 
+        Game.Instance.UseTitleContainer = true;
         Game.Instance.OnStart = Init;
         Game.Instance.Run();
         Game.Instance.Dispose();
